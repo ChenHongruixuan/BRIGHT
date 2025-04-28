@@ -10,31 +10,34 @@
 
 <sup>1</sup> The University of Tokyo, <sup>2</sup> RIKEN AIP,  <sup>3</sup> ETH Zurich,  <sup>4</sup> Microsoft Research Asia
 
-[![arXiv paper](https://img.shields.io/badge/arXiv-paper-b31b1b.svg)](https://arxiv.org/abs/2501.06019)  [![Codalab Leaderboard](https://img.shields.io/badge/Codalab-Leaderboard-cyan)](https://codalab.lisn.upsaclay.fr/competitions/21122) [![Zenodo Dataset](https://img.shields.io/badge/Zenodo-Dataset-blue)](https://zenodo.org/records/14950271)   [![HuggingFace Dataset](https://img.shields.io/badge/HuggingFace-Dataset-yellow)](https://huggingface.co/datasets/Kullervo/BRIGHT) ![visitors](https://visitor-badge.laobi.icu/badge?page_id=ChenHongruixuan.BRIGHT&left_color=%2363C7E6&right_color=%23CEE75F)
+[![arXiv paper](https://img.shields.io/badge/arXiv-paper-b31b1b.svg)](https://arxiv.org/abs/2501.06019)  [![Codalab Leaderboard](https://img.shields.io/badge/Codalab-Leaderboard-cyan)](https://codalab.lisn.upsaclay.fr/competitions/21122) [![Zenodo Dataset](https://img.shields.io/badge/Zenodo-Dataset-blue)](https://zenodo.org/records/15294434)   [![HuggingFace Dataset](https://img.shields.io/badge/HuggingFace-Dataset-yellow)](https://huggingface.co/datasets/Kullervo/BRIGHT) ![visitors](https://visitor-badge.laobi.icu/badge?page_id=ChenHongruixuan.BRIGHT&left_color=%2363C7E6&right_color=%23CEE75F)
 
 
-[**Overview**](#overview) | [**Start DFC25**](#%EF%B8%8Flets-get-started-with-dfc-2025) | [**Common Issues**](#common-issues) | [**Others**](#q--a) 
+[**Overview**](#overview) | [**Start BRIGHT**](#%EF%B8%8Flets-get-started-with-dfc-2025) | [**Common Issues**](#common-issues) | [**Others**](#q--a) 
 
 
 </div>
 
 ## 🛎️Updates
-* **` Notice☀️☀️`**: BRIGHT serves as the official dataset of [IEEE GRSS DFC 2025 Track II](https://www.grss-ieee.org/technical-committees/image-analysis-and-data-fusion/?tab=data-fusion-contest). You can download the dataset in  [Zenodo](https://zenodo.org/records/14950271) or [HuggingFace](https://huggingface.co/datasets/Kullervo/BRIGHT), use the code in this repo to run models and submit your results to [Leaderboard](https://codalab.lisn.upsaclay.fr/competitions/21122) in CodaLab!!
-* **` Mar 02th, 2025`**: Test data for IEEE GRSS DFC 2025 Track II is now available. You can download them from [Zenodo](https://zenodo.org/records/14950271) or [HuggingFace](https://huggingface.co/datasets/Kullervo/BRIGHT)!!
+* **` Notice☀️☀️`**: The [full version of the BRIGHT paper](https://arxiv.org/abs/2501.06019) are now online. Related data and models will be released soon!!
+* **` Apr 28th, 2025`**: IEEE GRSS DFC 2025 Track II is over. You can download the labels for validation and test sets now from [Zenodo](https://zenodo.org/records/15294434) or [HuggingFace](https://huggingface.co/datasets/Kullervo/BRIGHT)!!
 * **` Jan 18th, 2025`**: BRIGHT has been integrated into [TorchGeo](https://github.com/microsoft/torchgeo). Many thanks for the effort of [Nils Lehmann](https://github.com/nilsleh)!!
 * **` Jan 13th, 2025`**: The [arXiv paper](https://arxiv.org/abs/2501.06019) of BRIGHT is now online. If you are interested in details of BRIGHT, do not hesitate to take a look!!
 * **` Jan 13th, 2025`**: The benchmark code for IEEE GRSS DFC 2025 Track II is now available. Please follow the [**instruction**](#%EF%B8%8Flets-get-started-with-dfc-2025) to use it!! Also, you can find dataset and code related to Track I in [here](https://github.com/cliffbb/DFC2025-OEM-SAR-Baseline)!! 
 
 ## 🔭Overview
 
-* [**BRIGHT**](https://arxiv.org/abs/2501.06019) is the first open-access, globally distributed, event-diverse multimodal dataset specifically curated to support AI-based disaster response. It covers five types of natural disasters and two types of man-made disasters across 12 regions worldwide, with a particular focus on developing countries (`9 of 12 events are used for training and validation of IEEE GRSS DFC 2025`). 
+* [**BRIGHT**](https://arxiv.org/abs/2501.06019) is the first open-access, globally distributed, event-diverse multimodal dataset specifically curated to support AI-based disaster response. It covers **five** types of natural disasters and **two** types of man-made disasters across **14** disaster events in **23** regions worldwide, with a particular focus on developing countries. 
+
+
+* It supports not only the development of *supervised deep models*, but also the testing of their performance on *cross-event transfer* setup, as well as *unsupervised domain adaptation*, *semi-supervised learning*, *unsupervised change detection*, and *unsupervised image matching* methods in multimodal and disaster scenarios.
 
 <p align="center">
-  <img src="figure/overall.jpg" alt="accuracy" width="97%">
+  <img src="./figure/overall.jpg" alt="accuracy" width="97%">
 </p>
 
 
-## 🗝️Let's Get Started with DFC 2025!
+## 🗝️Let's Get Started with BRIGHT!
 ### `A. Installation`
 
 Note that the code in this repo runs under **Linux** system. We have not tested whether it works under other OS.
@@ -98,7 +101,7 @@ ${DATASET_ROOT}   # Dataset root directory, for example: /home/username/data/dfc
 
 ### `C. Model Training & Tuning`
 
-The following commands show how to train and evaluate UNet on the BRIGHT dataset using our split set in [`dfc25_benchmark/dataset/splitname`]:
+The following commands show how to train and evaluate UNet on the BRIGHT dataset using our standard ML split set in [`dfc25_benchmark/dataset/splitname`]:
 
 ```bash
 python script/train_baseline_network.py  --dataset 'BRIGHT' \
@@ -116,8 +119,8 @@ python script/train_baseline_network.py  --dataset 'BRIGHT' \
 ```
 
 
-### `D. Inference & Submission`
-For current development stage and subsequent test stage, you can run the following code to generate raw and visualized prediction results
+### `D. Inference & Evaluation`
+For current development stage and subsequent test stage, you can run the following code to generate raw & visualized prediction results and evaluate performance
 ```bash
 python script/infer_using_baseline_network.py  --val_dataset_path '<your dataset path>/val' \
                                                --val_data_list_path '<your project path>/dfc25_benchmark/dataset/splitname/val_setlevel.txt' \
@@ -126,11 +129,18 @@ python script/infer_using_baseline_network.py  --val_dataset_path '<your dataset
 ```
 
 
-Then, you can go to the official [Leaderboard](https://codalab.lisn.upsaclay.fr/competitions/21122) in CodaLab to submit your results. 
+### `E. Other Benchmarks & Setup (🛠️Under Construction)`
+In addition to the above supervised deep models, BRIGHT also provides standardized evaluation setups for several important learning paradigms and multimodal EO tasks:
 
-* `Keep the prediction name consistent with label name, i.e., turkey-earthquake_00000001_building_damage.png, hawaii-wildfire_00000003_building_damage.png, and so on.`
-* `All png files should be submitted in zip file format. Zip all prediction files directly without any folders containing them.`
-* `Using the raw prediction results instead of visualized ones.`
+* [`Cross-event transfer setup`](): Evaluate model generalization across disaster types and regions. This setup simulates real-world scenarios where no labeled data (**zero-shot**) or limited labeled data (**one-shot**) is available for the target event during training. 
+
+* [`Unsupervised domain adaptation`](): Adapt models trained on source disaster events to unseen target events without any target labels, using UDA techniques under the **zero-shot** cross-event setting.
+
+* [`Semi-supervised learning`](): Leverage a small number of labeled samples and a larger set of unlabeled samples from the target event to improve performance under the **one-shot** cross-event setting.
+
+* [`Unsupervised multimodal change detection`](): Detect disaster-induced building changes without using any labels. This setup supports benchmarking of general-purpose change detection algorithms under realistic large-scale disaster scenarios.
+
+* [`Unsupervised multimodal image matching`](): Evaluate the performance of matching algorithms in aligning **raw, large-scale** optical and SAR images based on **manual-control-point**-based registration accuracy. This setup focuses on realistic multimodal alignment in disaster-affected areas.
 
 
 
