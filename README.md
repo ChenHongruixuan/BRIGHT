@@ -36,6 +36,14 @@
   <img src="./figure/overall.jpg" alt="accuracy" width="97%">
 </p>
 
+## 📋To Do List
+
+- [ ] Release the data in Ukraine, Mexico and Myanmar. 
+- [ ] Release the code for cross-event transfer. 
+- [ ] Release the code for unsupervised multimodal change detection. 
+- [x] Release the [code](UMIM_benchmark/README.md) and [data](https://zenodo.org/records/15322113) for unsupervised multimodal image matching.
+- [x] Release the [validation and test labels](https://zenodo.org/records/15322113) of IEEE GRSS DFC 2025. 
+
 
 ## 🗝️Let's Get Started with BRIGHT!
 ### `A. Installation`
