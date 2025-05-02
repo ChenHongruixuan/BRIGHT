@@ -70,7 +70,7 @@ pip install -r requirements.txt
 
 
 ### `B. Data Preparation`
-Please download the BRIGHT from [Zenodo](https://zenodo.org/records/14950271) or [HuggingFace](https://huggingface.co/datasets/Kullervo/BRIGHT) and make them have the following folder/file structure:
+Please download the BRIGHT from [Zenodo](https://zenodo.org/records/15322113) or [HuggingFace](https://huggingface.co/datasets/Kullervo/BRIGHT) and make them have the following folder/file structure:
 ```
 ${DATASET_ROOT}   # Dataset root directory, for example: /home/username/data/dfc25_track2_trainval
 │

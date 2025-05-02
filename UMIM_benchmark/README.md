@@ -53,7 +53,7 @@ Please unzip [`UMIM_benchmark/area_based.zip`] for the code of area-based UMIM m
 
 
 ### `B. Data Preparation`
-Please download the unpreprocessed data from [Zenodo](https://zenodo.org/records/14950271) or [HuggingFace](https://huggingface.co/datasets/Kullervo/BRIGHT) and make them have the following folder/file structure:
+Please download the unpreprocessed data from [Zenodo](https://zenodo.org/records/15322113) or [HuggingFace](https://huggingface.co/datasets/Kullervo/BRIGHT) and make them have the following folder/file structure:
 ```
 ${DATASET_ROOT}   # Dataset root directory, for example: /home/username/data/umim
 │
