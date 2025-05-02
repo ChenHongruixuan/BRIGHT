@@ -140,7 +140,7 @@ In addition to the above supervised deep models, BRIGHT also provides standardiz
 
 * [`Unsupervised multimodal change detection`](): Detect disaster-induced building changes without using any labels. This setup supports benchmarking of general-purpose change detection algorithms under realistic large-scale disaster scenarios.
 
-* [`Unsupervised multimodal image matching`](): Evaluate the performance of matching algorithms in aligning **raw, large-scale** optical and SAR images based on **manual-control-point**-based registration accuracy. This setup focuses on realistic multimodal alignment in disaster-affected areas.
+* [`Unsupervised multimodal image matching`](UMIM_benchmark/README.md): Evaluate the performance of matching algorithms in aligning **raw, large-scale** optical and SAR images based on **manual-control-point**-based registration accuracy. This setup focuses on realistic multimodal alignment in disaster-affected areas.
 
 
 
