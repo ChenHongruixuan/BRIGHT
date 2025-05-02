@@ -40,8 +40,8 @@
 
 - [ ] Release the data in Ukraine, Mexico and Myanmar. 
 - [ ] Release the code for cross-event transfer. 
-- [ ] Release the code for unsupervised multimodal change detection. 
-- [x] Release the [code](UMIM_benchmark/README.md) and [data](https://zenodo.org/records/15322113) for unsupervised multimodal image matching.
+- [x] Release the [code](umcd_benchmark/README.md) for unsupervised multimodal change detection. 
+- [x] Release the [code](umim_benchmark/README.md) and [data](https://zenodo.org/records/15322113) for unsupervised multimodal image matching.
 - [x] Release the [validation and test labels](https://zenodo.org/records/15322113) of IEEE GRSS DFC 2025. 
 
 
@@ -146,9 +146,9 @@ In addition to the above supervised deep models, BRIGHT also provides standardiz
 
 * [`Semi-supervised learning`](): Leverage a small number of labeled samples and a larger set of unlabeled samples from the target event to improve performance under the **one-shot** cross-event setting.
 
-* [`Unsupervised multimodal change detection`](): Detect disaster-induced building changes without using any labels. This setup supports benchmarking of general-purpose change detection algorithms under realistic large-scale disaster scenarios.
+* [`Unsupervised multimodal change detection`](umcd_benchmark/README.md): Detect disaster-induced building changes without using any labels. This setup supports benchmarking of general-purpose change detection algorithms under realistic large-scale disaster scenarios.
 
-* [`Unsupervised multimodal image matching`](UMIM_benchmark/README.md): Evaluate the performance of matching algorithms in aligning **raw, large-scale** optical and SAR images based on **manual-control-point**-based registration accuracy. This setup focuses on realistic multimodal alignment in disaster-affected areas.
+* [`Unsupervised multimodal image matching`](umim_benchmark/README.md): Evaluate the performance of matching algorithms in aligning **raw, large-scale** optical and SAR images based on **manual-control-point**-based registration accuracy. This setup focuses on realistic multimodal alignment in disaster-affected areas.
 
 
 

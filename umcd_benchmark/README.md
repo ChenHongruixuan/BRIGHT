@@ -19,21 +19,27 @@
 
 ## 🛎️Updates
 * **` Notice☀️☀️`**: The [full version of the BRIGHT paper](https://arxiv.org/abs/2501.06019) are now online. Related data and benchmark suites will be released soon!!
-* **` Apr 28th, 2025`**: The data for unsupervised multimodal image matching has been uploaded to [Zenodo](https://zenodo.org/records/15322113) and [HuggingFace](https://huggingface.co/datasets/Kullervo/BRIGHT)!!
+* **` May 2nd, 2025`**: The code for unsupervised multimodal image matching has been uploaded!!
 
 
 ## 🔭Overview
 
-* [**BRIGHT**](https://arxiv.org/abs/2501.06019) supports the evaluation of **Unsupervised Multimodal Image Matching (UMIM)** algorithms for their performance in large-scale disaster scenarios. 
+* [**BRIGHT**](https://arxiv.org/abs/2501.06019) supports the evaluation of **Unsupervised Multimodal Change Detection (UMCD)** algorithms for their performance in large-scale disaster scenarios, thereby providing insights into their robustness and scalability.
 
-* Due to the lack of real ground truth correspondences, we adopt a proxy evaluation strategy using **manually selected control points** as references. These points are selected by several EO experts to represent clearly identifiable and stable features across modalities. While this does not constitute absolute ground truth, it can still allow us to assess **how closely automated methods approximate human matching ability** under multimodal disaster conditions.
+* We propose a **standardized and realistic** evaluation strategy for UMCD research, which involves an independent split for training and evaluation. This contrasts with the common practice in UMCD of training, tuning, and evaluating on the same dataset, which can lead to overly optimistic results. 
+
+
+* For evaluation, we treat **Destroyed** buildings as the positive (changed) class, and all other regions (including intact, damaged, and background) as the unchanged class. This allows a fair adaptation of these methods to a disaster-relevant setting while respecting their original design. 
+
+
+
 <p align="center">
-  <img src="../figure/control_points_for_UMIM.jpg" alt="UMIM" width="97%">
+  <img src="../figure/UMCD_performance.jpg" alt="UMCD" width="97%">
 </p>
 
 
 
-## 🗝️Let's Get Started UMIM with BRIGHT!
+## 🗝️Let's Get Started UMCD with BRIGHT!
 ### `A. Installation`
 
 Note that the code in this repo runs using [MATLAB 2024b](https://jp.mathworks.com/products/new_products/latest_features.html) in **Windows** system. We have not tested whether it works under other OS.
@@ -48,38 +54,36 @@ cd BRIGHT
 
 **Step 2: Unzip the code:**
 
-Please unzip [`UMIM_benchmark/area_based.zip`] for the code of area-based UMIM methods. 
+Please unzip [`UMCD_benchmark/IRG-McS_BRIGHT.zip`] for the code of [IRG-McS](https://ieeexplore.ieee.org/document/9477152) and [`UMCD_benchmark/AGSCC_BRIGHT.zip`] for [AGSCC](https://ieeexplore.ieee.org/document/9810207). These two methods are feature transformation and image translation methods, respectively. They are non-deep-learning methods and hence can be run quickly to get detection results.
 
 
 
 ### `B. Data Preparation`
-Please download the unpreprocessed data from [Zenodo](https://zenodo.org/records/15322113) or [HuggingFace](https://huggingface.co/datasets/Kullervo/BRIGHT) and make them have the following folder/file structure:
+Please just follow the standard supervised learning's part, download data from [Zenodo](https://zenodo.org/records/15322113) or [HuggingFace](https://huggingface.co/datasets/Kullervo/BRIGHT) and make them have the following folder/file structure:
 ```
-${DATASET_ROOT}   # Dataset root directory, for example: /home/username/data/umim
+${DATASET_ROOT}   # Dataset root directory, for example: /home/username/data/bright
+│ 
+├── pre-event
+│    ├──bata-explosion_00000000_pre_disaster.tif
+│    ├──bata-explosion_00000001_pre_disaster.tif
+│    ├──bata-explosion_00000002_pre_disaster.tif
+│   ...
 │
-└── umim
-     ├── noto_earthquake
-     │    ├── Noto_Earthquake_20240101_AOI01A_pre_disaster.tif
-     │    ├── Noto_Earthquake_20240101_AOI01A_post_disaster_before_registration.tif
-     │    └── Noto_Earthquake_20240101_AOI01A_manual_control_point.txt
-     │   ...
-     │
-     │ 
-     ├── bata_explosion
-     ...  ├── Noto_Earthquake_20240101_AOI01A_pre_disaster.tif
-          ...  
+├── post-event
+│    ├──bata-explosion_00000000_post_disaster.tif
+│    ... 
+│
+└── target
+     ├──bata-explosion_00000000_building_damage.tif 
+    ...   
 ```
 
 ### `C. Running Algorithm`
+You can use our provided standard split under the folder [`UMCD_benchmark/splitname`] to tune the parameters of UMCD methods and perform evaluation. In addition, we offer a subset split that excludes data from Ukraine, Myanmar, and Mexico, i.e, data of IEEE GRSS DFC 2025. 
 
-You can directly run the script named ``area_based_umim.m`` to perform the unsupervised multimodal image matching on ``Noto-Earthquake-20240101``.
+- For IRG-McS, you can directly run `IRGMcS_batch_process_BRIGHT.m`, using `train_umcd.txt` to tune the hyperparameters and `evaluation_umcd.txt` to evaluate the final results. Also, we provide a parallel implementation script `IRGMcS_batch_process_BRIGHT.m` to speed up. 
 
-After that, you can run the script named ``calculate_offset.m`` to calculate the spatial offset after registration.
-
-Some parameters will affect the registration performance. For example, you can change the parameter **featureType** in ``area_based_umim.m`` to use other feature descriptors. You can also change the parameters in following code in `matchFramework.m` to enlarge or reduce the number of feature points. 
-```
-[r,c,rsubp,cubp] = nonmaxsupptsgrid(Value,3,0.3,40,5); 
-```
+- For AGSCC, you can directly run `AGSCC_batch_process_BRIGHT.m` and the parallel speedup script `AGSCC_batch_process_BRIGHT_parallel.m` to speed up. 
 
 
 
@@ -97,7 +101,7 @@ If this dataset or code contributes to your research, please kindly consider cit
 ```
 
 ## 🤝Acknowledgments
-The MATLAB code for UMIM is based on [**CFOG**](https://github.com/yeyuanxin110/CFOG). The experiment about feature-based methods in our paper is based on [**SRIF**](https://github.com/LJY-RS/SRIF). Many thanks for their brilliant work!!
+The MATLAB code for UMCD is based on [**IRG-McS**](https://github.com/yulisun/IRG-McS) and [**AGSCC**](https://github.com/yulisun/AGSCC). Some other works evaluated in our paper include [**SR-GCAE**](https://ieeexplore.ieee.org/document/9984688), [**FD-MCD**](https://www.sciencedirect.com/science/article/pii/S092427162300062X),  [**AOSG**](https://www.sciencedirect.com/science/article/pii/S1569843223004545), and [**AEKAN**](https://ieeexplore.ieee.org/document/10793414/). Many thanks for their brilliant work!!
 
 ## 🙋Q & A
 ***For any questions, please feel free to leave it in the [issue section](https://github.com/ChenHongruixuan/BRIGHT/issues) or [contact us.](mailto:Qschrx@gmail.com)***
