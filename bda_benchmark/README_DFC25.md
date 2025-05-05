@@ -13,35 +13,33 @@
 [![arXiv paper](https://img.shields.io/badge/arXiv-paper-b31b1b.svg)](https://arxiv.org/abs/2501.06019)  [![Codalab Leaderboard](https://img.shields.io/badge/Codalab-Leaderboard-cyan)](https://codalab.lisn.upsaclay.fr/competitions/21122) [![Zenodo Dataset](https://img.shields.io/badge/Zenodo-Dataset-blue)](https://zenodo.org/records/15335889)   [![HuggingFace Dataset](https://img.shields.io/badge/HuggingFace-Dataset-yellow)](https://huggingface.co/datasets/Kullervo/BRIGHT) ![visitors](https://visitor-badge.laobi.icu/badge?page_id=ChenHongruixuan.BRIGHT&left_color=%2363C7E6&right_color=%23CEE75F)
 
 
-[**Overview**](#overview) | [**Start BRIGHT**](#%EF%B8%8Flets-get-started-with-bright) | [**Common Issues**](#common-issues) | [**Others**](#q--a) 
 
 
 </div>
 
 ## 🛎️Updates
-* **` Notice☀️☀️`**: The [full version of the BRIGHT paper](https://arxiv.org/abs/2501.06019) are now online!!
-* **` May 05th, 2025`**: All the data and benchmark code related to our paper has now released. You are warmly welcome to use them!!
+* **` Notice☀️☀️`**: The [full version of the BRIGHT paper](https://arxiv.org/abs/2501.06019) are now online. 
 * **` Apr 28th, 2025`**: IEEE GRSS DFC 2025 Track II is over. Congratulations to [winners](https://www.grss-ieee.org/community/technical-committees/winners-of-the-2025-ieee-grss-data-fusion-contest-all-weather-land-cover-and-building-damage-mapping/)!! You can now download the full version of DFC 2025 Track II data in [Zenodo](https://zenodo.org/records/15335889) or [HuggingFace](https://huggingface.co/datasets/Kullervo/BRIGHT)!!
-* **` Jan 18th, 2025`**: BRIGHT has been integrated into [TorchGeo](https://github.com/microsoft/torchgeo). Many thanks for the effort of [Nils Lehmann](https://github.com/nilsleh)!!
-* **` Jan 13th, 2025`**: The [arXiv paper](https://arxiv.org/abs/2501.06019) of BRIGHT is now online. If you are interested in details of BRIGHT, do not hesitate to take a look!!
-* **` Jan 13th, 2025`**: The benchmark code for IEEE GRSS DFC 2025 Track II is now available. Please follow the [**instruction**](#%EF%B8%8Flets-get-started-with-dfc-2025) to use it!! Also, you can find dataset and code related to Track I in [here](https://github.com/cliffbb/DFC2025-OEM-SAR-Baseline)!! 
 
 ## 🔭Overview
 
-* [**BRIGHT**](https://arxiv.org/abs/2501.06019) is the first open-access, globally distributed, event-diverse multimodal dataset specifically curated to support AI-based disaster response. It covers **five** types of natural disasters and **two** types of man-made disasters across **14** disaster events in **23** regions worldwide, with a particular focus on developing countries. 
+* [**BRIGHT**](https://arxiv.org/abs/2501.06019) also serves the official dataset of [2025 IEEE GRSS Data Fusion Contest](https://www.grss-ieee.org/technical-committees/image-analysis-and-data-fusion/?tab=working-groups): All-Weather Land Cover and Building Damage Mapping. 
 
 
-* It supports not only the development of **supervised** deep models, but also the testing of their performance on **cross-event transfer** setup, as well as **unsupervised domain adaptation**, **semi-supervised learning**, **unsupervised change detection**, and **unsupervised image matching** methods in multimodal and disaster scenarios.
+* Although the DFC25 has concluded, we have retained the relevant code and dataset splits to support your research if you wish to continue working within the DFC25 setting. Specifically, **nine** events are designated for training and validation, while **two** events (Noto-Earthquake-2024 and Marshall-Wildfire-2021) are reserved unseen for testing.
+
+
+
+
 
 <p align="center">
-  <img src="./figure/overall.jpg" alt="accuracy" width="97%">
+  <img src="../figure/DFC25.png" alt="dfc25" width="97%">
 </p>
 
 
 
-
-## 🗝️Let's Get Started with BRIGHT!
-### `A. Installation`
+## 🗝️Let's Get Started with DFC 2025!
+### `A. Preparation`
 
 Note that the code in this repo runs under **Linux** system. We have not tested whether it works under other OS.
 
@@ -73,7 +71,7 @@ pip install -r requirements.txt
 
 
 ### `B. Data Preparation`
-Please download the BRIGHT from [Zenodo](https://zenodo.org/records/15335889) or [HuggingFace](https://huggingface.co/datasets/Kullervo/BRIGHT). Note that we cannot redistribute the optical data over Ukraine, Myanmar, and Mexico. Please follow our [tutorial]() to download and preprocess them. 
+Please download the BRIGHT from [Zenodo](https://zenodo.org/records/15335889) or [HuggingFace](https://huggingface.co/datasets/Kullervo/BRIGHT). Note that **`you don't need data over Ukraine, Myanmar, and Mexico under DFC 25 setup`**.
 
 After the data has been prepared, please make them have the following folder/file structure:
 ```
@@ -96,7 +94,7 @@ ${DATASET_ROOT}   # Dataset root directory, for example: /home/username/data/bri
 
 ### `C. Model Training & Tuning`
 
-The following commands show how to train and evaluate UNet on the BRIGHT dataset using our standard ML split set in [`bda_benchmark/dataset/splitname/standard_ML`]:
+The following commands show how to train and evaluate UNet on the BRIGHT dataset using DFC25 split set in [`bda_benchmark/dataset/splitname/dfc25`]:
 
 ```bash
 python script/standard_ML/train_UNet.py --dataset 'BRIGHT' \
@@ -109,50 +107,29 @@ python script/standard_ML/train_UNet.py --dataset 'BRIGHT' \
                                         --model_type 'UNet' \
                                         --model_param_path '<your model checkpoint saved path>' \
                                         --train_dataset_path '<your dataset path>' \
-                                        --train_data_list_path '<your project path>/bda_benchmark/dataset/splitname/standard_ML/train_set.txt' \
+                                        --train_data_list_path '<your project path>/bda_benchmark/dataset/splitname/dfc25/train_set.txt' \
                                         --val_dataset_path '<your dataset path>' \
-                                        --val_data_list_path '<your project path>/bda_benchmark/dataset/splitname/standard_ML/val_set.txt' \
+                                        --val_data_list_path '<your project path>/bda_benchmark/dataset/splitname/dfc25/holdout_set.txt' \
                                         --test_dataset_path '<your dataset path>' \
-                                        --test_data_list_path '<your project path>/bda_benchmark/dataset/splitname/standard_ML/test_set.txt' 
+                                        --test_data_list_path '<your project path>/bda_benchmark/dataset/splitname/dfc25/val_set.txt' 
 ```
 
 
 ### `D. Inference & Evaluation`
-Then, you can run the following code to generate raw & visualized prediction results and evaluate performance using the saved weight. 
-
+The following commands show how to evaluate trained UNet on the two unseen events:
 ```bash
 python script/standard_ML/infer_UNet.py --model_path  '<path of the checkpoint of model>' \
                                         --test_dataset_path '<your dataset path>' \
-                                        --test_data_list_path '<your project path>/bda_benchmark/dataset/splitname/standard_ML/test_set.txt' \
+                                        --test_data_list_path '<your project path>/bda_benchmark/dataset/splitname/dfc25/test_set.txt' \
                                         --output_dir '<your inference results saved path>'
 ```
 
-### `E. Other Benchmarks & Setup`
-In addition to the above supervised deep models, BRIGHT also provides standardized evaluation setups for several important learning paradigms and multimodal EO tasks:
+Then, you can still go to the official [Leaderboard](https://codalab.lisn.upsaclay.fr/competitions/21122) in CodaLab to submit your results. 
 
-* [`Cross-event transfer setup`](bda_benchmark/README_cross_event.md): Evaluate model generalization across disaster types and regions. This setup simulates real-world scenarios where no labeled data (**zero-shot**) or limited labeled data (**one-shot**) is available for the target event during training. 
+* `Keep the prediction name consistent with label name, i.e., turkey-earthquake_00000001_building_damage.png, hawaii-wildfire_00000003_building_damage.png, and so on.`
+* `All png files should be submitted in zip file format. Zip all prediction files directly without any folders containing them.`
+* `Using the raw prediction results instead of visualized ones.`
 
-* [`Unsupervised domain adaptation`](bda_benchmark/README_cross_event.md): Adapt models trained on source disaster events to unseen target events without any target labels, using UDA techniques under the **zero-shot** cross-event setting.
-
-* [`Semi-supervised learning`](bda_benchmark/README_cross_event.md): Leverage a small number of labeled samples and a larger set of unlabeled samples from the target event to improve performance under the **one-shot** cross-event setting.
-
-
-* [`IEEE GRSS DFC 2025 Trakc II`](bda_benchmark/README_DFC25.md): The Track II of [IEEE GRSS DFC 2025](https://www.grss-ieee.org/technical-committees/image-analysis-and-data-fusion/) aims to develop methods for assessing building damage using bi-temporal multimodal images.
-
-* [`Unsupervised multimodal change detection`](umcd_benchmark/README.md): Detect disaster-induced building changes without using any labels. This setup supports benchmarking of general-purpose change detection algorithms under realistic large-scale disaster scenarios.
-
-* [`Unsupervised multimodal image matching`](umim_benchmark/README.md): Evaluate the performance of matching algorithms in aligning **raw, large-scale** optical and SAR images based on **manual-control-point**-based registration accuracy. This setup focuses on realistic multimodal alignment in disaster-affected areas.
-
-
-
-## 🤔Common Issues
-Based on peers' questions from [issue section](https://github.com/ChenHongruixuan/BRIGHT/issues), here's a quick navigate list of solutions to some common issues.
-
-| Issue | Solution | 
-| :---: | :---: | 
-|  Abnormal accuracy (like 0 or -999999) given by leaderboard   |   Keep the prediction name and label name consistent / Zip all prediction files directly, not the folder containing them     |
-|  Leaderboard server not responding after submitting results   |   Change browser (Google Chrome recommended)     |
-|  Python package conflicts   |   The baseline code is not limited to a specific version, and participants do not need to match the version we provide.     |
 
 
 ## 📜Reference
