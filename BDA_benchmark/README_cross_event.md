@@ -34,7 +34,7 @@
 * The unsupervised domain adaptation (UDA) and semi-supervised learning (SSL) methods naturally emerge as promising strategies to bridge the domain gap between the source and the target disaster events. In the zero-shot setting, UDA methods aim to improve model generalization by aligning the source and target domains without requiring any target labels. In the one-shot setting, SSL methods leverage a small number of labeled samples with abundant unlabeled data from the target event.
 
 <p align="center">
-  <img src="./figure/cross_event_transfer.png" alt="accuracy" width="97%">
+  <img src="../figure/cross_event_transfer.png" alt="accuracy" width="97%">
 </p>
 
 
