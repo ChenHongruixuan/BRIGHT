@@ -148,6 +148,7 @@ Based on peers' questions from [issue section](https://github.com/ChenHongruixua
 
 | Issue | Solution | 
 | :---: | :---: | 
+|  Complete data of DFC25 for research |   The labels for validation and test sets of DFC25 have been uploaded to [Zenodo](https://zenodo.org/records/15335889) and [HuggingFace](https://huggingface.co/datasets/Kullervo/BRIGHT).     |
 |  Python package conflicts   |   The baseline code is not limited to a specific version, and participants do not need to match the version we provide.     |
 
 
