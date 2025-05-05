@@ -20,6 +20,7 @@
 ## 🛎️Updates
 * **` Notice☀️☀️`**: The [full version of the BRIGHT paper](https://arxiv.org/abs/2501.06019) are now online. 
 * **` Apr 28th, 2025`**: IEEE GRSS DFC 2025 Track II is over. Congratulations to [winners](https://www.grss-ieee.org/community/technical-committees/winners-of-the-2025-ieee-grss-data-fusion-contest-all-weather-land-cover-and-building-damage-mapping/)!! You can now download the full version of DFC 2025 Track II data in [Zenodo](https://zenodo.org/records/15335889) or [HuggingFace](https://huggingface.co/datasets/Kullervo/BRIGHT)!!
+* **` Jan 13th, 2025`**: The benchmark code for IEEE GRSS DFC 2025 Track II is now available. Please follow the [**instruction**](#%EF%B8%8Flets-get-started-with-dfc-2025) to use it!! Also, you can find dataset and code related to Track I in [here](https://github.com/cliffbb/DFC2025-OEM-SAR-Baseline)!! 
 
 ## 🔭Overview
 
@@ -33,7 +34,7 @@
 
 
 <p align="center">
-  <img src="../figure/DFC25.png" alt="dfc25" width="97%">
+  <img src="../figure/DFC25.jpg" alt="dfc25" width="97%">
 </p>
 
 
