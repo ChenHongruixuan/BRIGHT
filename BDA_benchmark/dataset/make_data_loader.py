@@ -74,7 +74,6 @@ class MultimodalDamageAssessmentDatset(Dataset):
         return len(self.data_list)
 
 
-
 class MultimodalDamageAssessmentDatset_Inference(Dataset):
     def __init__(self, dataset_path, data_list, data_loader=img_loader, suffix='.tif'):
         self.dataset_path = dataset_path

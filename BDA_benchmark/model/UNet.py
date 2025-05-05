@@ -25,7 +25,7 @@ class ConvBlock(nn.Module):
 
 
 class UNet(nn.Module):
-    def __init__(self, in_channels, out_channels):
+    def __init__(self, in_channels, num_classes):
         super(UNet, self).__init__()
         
         self.encoder1 = ConvBlock(in_channels, 64)
@@ -45,7 +45,7 @@ class UNet(nn.Module):
         self.upconv2 = nn.ConvTranspose2d(256, 128, kernel_size=2, stride=2)
         self.upconv1 = nn.ConvTranspose2d(128, 64, kernel_size=2, stride=2)
         
-        self.final_conv = nn.Conv2d(64, out_channels, kernel_size=1)
+        self.final_conv = nn.Conv2d(64, num_classes, kernel_size=1)
         
     def forward(self, x):
         # Encoder path

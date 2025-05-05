@@ -1,6 +1,6 @@
 import random
 import numpy as np
-
+import cv2
 
 def normalize_img(img, mean=[123.675, 116.28, 103.53], std=[58.395, 57.12, 57.375]):
     """Normalize image by subtracting mean and dividing by std."""
@@ -21,6 +21,7 @@ def random_fliplr(pre_img, post_img, label):
     return pre_img, post_img, label
 
 
+
 def random_flipud(pre_img, post_img, label):
     if random.random() > 0.5:
         label = np.flipud(label)
@@ -29,6 +30,18 @@ def random_flipud(pre_img, post_img, label):
 
     return pre_img, post_img, label
 
+
+def random_scale(pre_img, post_img, label=None, scales=None):
+    scale = random.choice(scales)
+    if scales != 1:
+        sh = int(pre_img.shape[0] * scale)
+        sw = int(pre_img.shape[1] * scale)
+        pre_img = cv2.resize(pre_img, (sw, sh), interpolation=cv2.INTER_LINEAR)
+        post_img = cv2.resize(post_img, (sw, sh), interpolation=cv2.INTER_LINEAR)
+    if label is not None:
+        label = cv2.resize(label, (sw, sh), interpolation=cv2.INTER_NEAREST)
+
+    return pre_img, post_img, label
 
 def random_rot(pre_img, post_img, label):
     k = random.randrange(3) + 1

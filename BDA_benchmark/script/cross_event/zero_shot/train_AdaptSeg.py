@@ -1,0 +1,341 @@
+import sys
+sys.path.append('/home/songjian/project/BRIGHT/essd') # change this to the path of your project
+
+import argparse
+import os
+import time
+
+import numpy as np
+
+
+import torch
+import torch.nn.functional as F
+import torch.optim as optim
+from torch.utils.data import DataLoader
+from tqdm import tqdm
+from dataset.make_data_loader import MultimodalDamageAssessmentDatset
+from model.DeepLabV3Plus import DeepLabV3Plus
+from model.SiamCRNN import SiamCRNN
+from datetime import datetime
+from model.AdaptSeg.discriminator import FCDiscriminator
+
+from util_func.metrics import Evaluator
+import util_func.lovasz_loss as L
+
+
+class Trainer(object):
+    """
+    Trainer class that encapsulates model, optimizer, and data loading.
+    It can train the model and evaluate its performance on a holdout set.
+    """
+
+    def __init__(self, args):
+        """
+        Initialize the Trainer with arguments from the command line or defaults.
+
+        :param args: Argparse namespace containing:
+            - dataset, train_dataset_path, holdout_dataset_path, etc.
+            - model_type, model_param_path, resume path for checkpoint
+            - learning rate, weight decay, etc.
+        """
+        self.args = args
+
+        # Initialize evaluator for metrics such as accuracy, IoU, etc.
+        self.evaluator = Evaluator(num_class=4)
+
+
+        # Create the deep learning model. Here we show how to use UNet or SiamCRNN.
+        self.deep_model = DeepLabV3Plus(in_channels=6, num_classes=4) 
+        # self.deep_model = SiamCRNN()
+
+        self.deep_model = self.deep_model.cuda()
+        self.discriminator = FCDiscriminator(num_classes=4).cuda()
+
+        # Create a directory to save model weights, organized by timestamp.
+        now_str = datetime.now().strftime("%Y%m%d_%H%M%S")
+        self.model_save_path = os.path.join(args.model_param_path, args.dataset, args.model_type + '_' + now_str)
+
+        if not os.path.exists(self.model_save_path):
+            os.makedirs(self.model_save_path)
+
+        if args.resume is not None:
+            if not os.path.isfile(args.resume):
+                raise RuntimeError("=> no checkpoint found at '{}'".format(args.resume))
+            checkpoint = torch.load(args.resume)
+            model_dict = {}
+            state_dict = self.deep_model.state_dict()
+            for k, v in checkpoint.items():
+                if k in state_dict:
+                    model_dict[k] = v
+            state_dict.update(model_dict)
+            self.deep_model.load_state_dict(state_dict)
+
+        self.optim_seg = optim.AdamW(self.deep_model.parameters(),
+                                 lr=args.learning_rate_seg,
+                                 weight_decay=args.weight_decay)
+        
+        self.optim_dis = optim.AdamW(self.discriminator.parameters(),
+                                 lr=args.learning_rate_dis,
+                                 weight_decay=args.weight_decay)
+        
+        self.bce_loss = torch.nn.BCEWithLogitsLoss()
+
+    def training(self):
+        """
+        Main training loop that iterates over the training dataset for several steps (max_iters).
+        Prints intermediate losses and evaluates on holdout dataset periodically.
+        """
+        best_mIoU = 0.0
+        best_round = []
+
+        torch.cuda.empty_cache()
+        source_label = 0
+        target_label = 1
+    
+        train_dataset_source = MultimodalDamageAssessmentDatset(self.args.train_dataset_path, self.args.train_data_name_list, crop_size=self.args.crop_size, max_iters=self.args.max_iters, type='train')
+        train_dataset_target = MultimodalDamageAssessmentDatset(self.args.test_dataset_path, self.args.test_data_name_list, crop_size=self.args.crop_size, max_iters=self.args.max_iters, type='train')
+
+        train_data_loader_source = DataLoader(train_dataset_source, batch_size=self.args.train_batch_size, shuffle=True, num_workers=self.args.num_workers, drop_last=False)
+        train_data_loader_target = DataLoader(train_dataset_target, batch_size=self.args.train_batch_size, shuffle=True, num_workers=self.args.num_workers, drop_last=False)
+
+        elem_num = len(train_data_loader_source)
+        train_enumerator_source = enumerate(train_data_loader_source)
+        train_enumerator_target = enumerate(train_data_loader_target)
+
+        for iter_index in tqdm(range(elem_num)):
+            # don't accumulate grads in D
+            for param in self.discriminator.parameters():
+                param.requires_grad = False
+            
+            self.optim_seg.zero_grad()   
+            self.optim_dis.zero_grad()   
+
+            itera, data_source = train_enumerator_source.__next__()
+            _, data_target = train_enumerator_target.__next__()
+
+            pre_change_imgs_source, post_change_imgs_source, labels_loc, labels_clf, _ = data_source
+            pre_change_imgs_target, post_change_imgs_target, _, _, _ = data_target
+
+            pre_change_imgs_source = pre_change_imgs_source.cuda()
+            post_change_imgs_source = post_change_imgs_source.cuda()
+            labels_loc = labels_loc.cuda().long()
+            labels_clf = labels_clf.cuda().long()
+
+            pre_change_imgs_target = pre_change_imgs_target.cuda()
+            post_change_imgs_target = post_change_imgs_target.cuda()
+            
+
+            valid_labels_clf = (labels_clf != 255).any()
+            if not valid_labels_clf:
+               continue
+            
+            # Training on the source domain
+            input_data_source = torch.cat([pre_change_imgs_source, post_change_imgs_source], dim=1) # if you use UNet
+            output_clf_source = self.deep_model(input_data_source)  # if you use UNet
+
+            ce_loss_clf = F.cross_entropy(output_clf_source, labels_clf)
+            lovasz_loss_clf = L.lovasz_softmax(F.softmax(output_clf_source, dim=1), labels_clf, ignore=255)      
+            seg_loss = ce_loss_clf + 0.75 * lovasz_loss_clf # iuf you use UNet
+            seg_loss.backward()
+
+            
+            # prediction on the target domain
+            input_data_target = torch.cat([pre_change_imgs_target, post_change_imgs_target], dim=1) # if you use UNet
+            output_clf_target = self.deep_model(input_data_target)  # if you use UNet
+            D_out_target_adv = self.discriminator(F.softmax(output_clf_target, dim=1))
+            loss_adv_target = 0.001 * self.bce_loss(D_out_target_adv, torch.FloatTensor(D_out_target_adv.data.size()).fill_(source_label).cuda())
+            loss_adv_target.backward()
+
+            # train Discriminator
+            # bring back requires_grad
+            for param in self.discriminator.parameters():
+                param.requires_grad = True
+                
+            output_clf_source = output_clf_source.detach()
+            D_out_source = self.discriminator(F.softmax(output_clf_source, dim=1))
+            loss_D_source = 0.5 * self.bce_loss(D_out_source, torch.FloatTensor(D_out_source.data.size()).fill_(source_label).cuda())
+            loss_D_source.backward()
+
+            output_clf_target = output_clf_target.detach()
+            D_out_target = self.discriminator(F.softmax(output_clf_target, dim=1))
+            loss_D_target = 0.5 * self.bce_loss(D_out_target, torch.FloatTensor(D_out_target.data.size()).fill_(target_label).cuda())                
+            loss_D_target.backward()
+
+            self.optim_seg.step()
+            self.optim_dis.step()
+
+            if (itera + 1) % 10 == 0:
+                print(f'iter is {itera + 1}, seg loss is {seg_loss.item()}, adv loss is {loss_adv_target}, discriminator loss is {loss_D_source + loss_D_target}')
+                
+                if (itera + 1) % 500 == 0:
+                    self.deep_model.eval()
+                    
+                    val_mIoU, val_OA, val_IoU_of_each_class = self.validation()
+                    test_mIoU, test_OA, test_IoU_of_each_class = self.test()
+
+                    if val_mIoU > best_mIoU:
+                        torch.save(self.deep_model.state_dict(), os.path.join(self.model_save_path, f'best_model.pth'))
+                        best_mIoU = val_mIoU
+                        best_round = {
+                            'Test event': self.args.test_event_name,
+                            'best iter': itera + 1,
+                            'best mIoU': [val_mIoU * 100, test_mIoU * 100],
+                            'best OA': [val_OA * 100, test_OA * 100],
+                            'best sub class IoU': (val_IoU_of_each_class * 100, test_IoU_of_each_class * 100)
+                        }
+
+                    self.deep_model.train()
+
+        print('The accuracy of the best round selected using Source domain is ', best_round)
+
+
+    def validation(self):
+        print('---------starting validation-----------')
+        self.evaluator.reset()
+        dataset = MultimodalDamageAssessmentDatset(self.args.val_dataset_path, self.args.val_data_name_list, 1024, None, 'test')
+        val_data_loader = DataLoader(dataset, batch_size=self.args.eval_batch_size, num_workers=1, drop_last=False)
+        torch.cuda.empty_cache()
+
+        with torch.no_grad():
+            for _, data in enumerate(val_data_loader):
+                pre_change_imgs, post_change_imgs, labels_loc, labels_clf, _ = data
+
+                pre_change_imgs = pre_change_imgs.cuda()
+                post_change_imgs = post_change_imgs.cuda()
+                labels_loc = labels_loc.cuda().long()
+                labels_clf = labels_clf.cuda().long()
+
+                input_data = torch.cat([pre_change_imgs, post_change_imgs], dim=1) # if you use UNet
+                output_clf = self.deep_model(input_data)  # if you use UNet
+                # _, output_clf = self.deep_model(pre_change_imgs, post_change_imgs) # If you use SiamCRNN
+
+
+                output_clf = output_clf.data.cpu().numpy()
+                output_clf = np.argmax(output_clf, axis=1)
+                labels_clf = labels_clf.cpu().numpy()
+
+                self.evaluator.add_batch(labels_clf, output_clf)
+
+        
+        final_OA = self.evaluator.Pixel_Accuracy()
+        IoU_of_each_class = self.evaluator.Intersection_over_Union()
+        mIoU = self.evaluator.Mean_Intersection_over_Union()
+        print(f'OA is {100 * final_OA}, mIoU is {100 * mIoU}, sub class IoU is {100 * IoU_of_each_class}')
+        return mIoU, final_OA, IoU_of_each_class
+
+    
+    
+    def test(self):
+        print('---------starting test-----------')
+        self.evaluator.reset()
+        dataset = MultimodalDamageAssessmentDatset(self.args.test_dataset_path, self.args.test_data_name_list, 1024, None, 'test')
+        test_data_loader = DataLoader(dataset, batch_size=self.args.eval_batch_size, num_workers=1, drop_last=False)
+        torch.cuda.empty_cache()
+
+        with torch.no_grad():
+            for _, data in enumerate(test_data_loader):
+                pre_change_imgs, post_change_imgs, labels_loc, labels_clf, _ = data
+
+                pre_change_imgs = pre_change_imgs.cuda()
+                post_change_imgs = post_change_imgs.cuda()
+                labels_loc = labels_loc.cuda().long()
+                labels_clf = labels_clf.cuda().long()
+
+                input_data = torch.cat([pre_change_imgs, post_change_imgs], dim=1) # if you use UNet
+                output_clf = self.deep_model(input_data)  # if you use UNet
+                # _, output_clf = self.deep_model(pre_change_imgs, post_change_imgs) # If you use SiamCRNN
+
+
+                output_clf = output_clf.data.cpu().numpy()
+                output_clf = np.argmax(output_clf, axis=1)
+                labels_clf = labels_clf.cpu().numpy()
+
+                self.evaluator.add_batch(labels_clf, output_clf)
+        
+        final_OA = self.evaluator.Pixel_Accuracy()
+        IoU_of_each_class = self.evaluator.Intersection_over_Union()
+        mIoU = self.evaluator.Mean_Intersection_over_Union()
+        print(f'OA is {100 * final_OA}, mIoU is {100 * mIoU}, sub class IoU is {100 * IoU_of_each_class}')
+        return mIoU, final_OA, IoU_of_each_class
+    
+
+def get_data_with_prefix(data_list, prefix):
+    # 根据前缀过滤影像名
+    return [data_name for data_name in data_list if data_name.startswith(prefix)]
+
+def remove_data_with_prefix(data_list, prefix):
+    # 从数据列表中删除符合前缀的影像名
+    return [data_name for data_name in data_list if not data_name.startswith(prefix)]
+
+def main():
+    parser = argparse.ArgumentParser(description="Training on BRIGHT dataset")
+    parser.add_argument('--dataset', type=str, default='BRIGHT')
+
+    parser.add_argument('--train_dataset_path', type=str)
+    parser.add_argument('--train_data_list_path', type=str)
+
+    parser.add_argument('--val_dataset_path', type=str)
+    parser.add_argument('--val_data_list_path', type=str)
+    
+
+    parser.add_argument('--test_dataset_path', type=str)
+    parser.add_argument('--test_data_list_path', type=str)
+
+    parser.add_argument('--test_event_name', type=str)
+    
+    parser.add_argument('--train_batch_size', type=int, default=8)
+    parser.add_argument('--eval_batch_size', type=int, default=1)
+    parser.add_argument('--crop_size', type=int)
+    parser.add_argument('--train_data_name_list', type=list)
+    parser.add_argument('--val_data_name_list', type=list)
+    parser.add_argument('--test_data_name_list', type=list)
+    parser.add_argument('--start_iter', type=int, default=0)
+    parser.add_argument('--cuda', type=bool, default=True)
+    parser.add_argument('--max_iters', type=int, default=240000)
+    parser.add_argument('--model_type', type=str)
+    parser.add_argument('--model_param_path', type=str, default='/home/songjian/project/BRIGHT/manuscript/saved_weights')
+    parser.add_argument('--resume', type=str)
+    parser.add_argument('--learning_rate_seg', type=float, default=1e-4)
+    parser.add_argument('--learning_rate_dis', type=float, default=1e-4)
+
+    parser.add_argument('--momentum', type=float, default=0.9)
+    parser.add_argument('--weight_decay', type=float, default=5e-3)
+    parser.add_argument('--num_workers', type=int)
+    args = parser.parse_args()
+    # 读取文件
+    with open(args.train_data_list_path, "r") as f:
+        train_data_name_list = [data_name.strip() for data_name in f]
+    # args.train_data_name_list = train_data_name_list
+    with open(args.val_data_list_path, "r") as f:
+        val_data_name_list = [data_name.strip() for data_name in f]
+    # args.val_data_name_list = val_data_name_list
+    with open(args.test_data_list_path, "r") as f:
+        test_data_name_list = [data_name.strip() for data_name in f]
+    
+
+    new_test_data = get_data_with_prefix(train_data_name_list, args.test_event_name) + \
+                    get_data_with_prefix(val_data_name_list, args.test_event_name) + \
+                    get_data_with_prefix(test_data_name_list, args.test_event_name)
+    
+
+    new_train_data_name_list = remove_data_with_prefix(train_data_name_list, args.test_event_name)
+    new_val_data_name_list = remove_data_with_prefix(val_data_name_list, args.test_event_name)
+    new_test_data_name_list = remove_data_with_prefix(test_data_name_list, args.test_event_name)
+    
+    # 合并新的test数据到train集
+    new_train_data_name_list = new_train_data_name_list + new_test_data_name_list
+    
+    args.train_data_name_list = new_train_data_name_list
+    args.val_data_name_list = new_val_data_name_list
+    # 将新的test数据保存为args.test_data_name_list
+    args.test_data_name_list = new_test_data
+
+    print(f'Training {args.model_type} on the BRIGHT under event-level transfer setup. Test event is {args.test_event_name}')
+    print(f'Test data is {args.test_data_name_list}')
+    print(f'Val data (source domain) is {args.val_data_name_list}')
+
+    trainer = Trainer(args)
+    trainer.training()
+
+if __name__ == '__main__':
+    main()

@@ -1,5 +1,5 @@
 import sys
-sys.path.append('/home/chenhrx/project/BRIGHT/dfc25_benchmark') # change this to the path of your project
+sys.path.append('/home/songjian/project/BRIGHT/essd') # change this to the path of your project
 
 import argparse
 import os
@@ -15,7 +15,7 @@ from torch.utils.data import DataLoader
 from tqdm import tqdm
 from dataset.make_data_loader import MultimodalDamageAssessmentDatset
 from model.UNet import UNet
-from model.SiamCRNN import SiamCRNN
+from model.SiamAttnUNet import SiamAttnUNet
 from datetime import datetime
 
 from util_func.metrics import Evaluator
@@ -40,11 +40,12 @@ class Trainer(object):
         self.args = args
 
         # Initialize evaluator for metrics such as accuracy, IoU, etc.
-        self.evaluator = Evaluator(num_class=4)
-
+        self.evaluator_loc = Evaluator(num_class=2)
+        self.evaluator_clf = Evaluator(num_class=4)
+        self.evaluator_total = Evaluator(num_class=4)
 
         # Create the deep learning model. Here we show how to use UNet or SiamCRNN.
-        self.deep_model = UNet(in_channels=6, out_channels=4) 
+        self.deep_model = SiamAttnUNet(in_channels=3, num_classes=4) 
         # self.deep_model = SiamCRNN()
 
         self.deep_model = self.deep_model.cuda()
@@ -97,8 +98,8 @@ class Trainer(object):
             if not valid_labels_clf:
                continue
 
-            input_data = torch.cat([pre_change_imgs, post_change_imgs], dim=1) # if you use UNet
-            output_clf = self.deep_model(input_data)  # if you use UNet
+            # input_data = torch.cat([pre_change_imgs, post_change_imgs], dim=1) # if you use UNet
+            output_clf = self.deep_model(pre_change_imgs, post_change_imgs)  # if you use UNet
             # outout_loc, output_clf = self.deep_model(pre_change_imgs, post_change_imgs) # If you use SiamCRNN
 
             self.optim.zero_grad()   
@@ -121,16 +122,25 @@ class Trainer(object):
                 print(f'iter is {itera + 1}, classification loss is {final_loss.item()}')
                 if (itera + 1) % 500 == 0:
                     self.deep_model.eval()
-                    val_mIoU, final_OA, IoU_of_each_class = self.validation()
+                    loc_f1_score_val, harmonic_mean_f1_val, final_OA_val, mIoU_val, IoU_of_each_class_val = self.validation()
+                    loc_f1_score_test, harmonic_mean_f1_test, final_OA_test, mIoU_test, IoU_of_each_class_test = self.test()
+                    
 
-                    if val_mIoU > best_mIoU:
+                    if mIoU_val > best_mIoU:
                         torch.save(self.deep_model.state_dict(), os.path.join(self.model_save_path, f'best_model.pth'))
-                        best_mIoU = val_mIoU
+                        best_mIoU = mIoU_val
                         best_round = {
                             'best iter': itera + 1,
-                            'best mIoU': val_mIoU * 100,
-                            'best OA': final_OA * 100,
-                            'best sub class IoU': IoU_of_each_class * 100
+                            'loc f1 (val)': loc_f1_score_val * 100,
+                            'clf f1 (val)': harmonic_mean_f1_val * 100,
+                            'OA (val)': final_OA_val * 100,
+                            'mIoU (val)': mIoU_val * 100,
+                            'sub class IoU (val)': IoU_of_each_class_val * 100,
+                            'loc f1 (test)': loc_f1_score_test * 100,
+                            'clf f1 (test)': harmonic_mean_f1_test * 100,
+                            'OA (test)': final_OA_test * 100,
+                            'mIoU (test)': mIoU_test * 100,
+                            'sub class IoU (test)': IoU_of_each_class_test * 100
                         }
                     self.deep_model.train()
 
@@ -139,13 +149,15 @@ class Trainer(object):
 
     def validation(self):
         print('---------starting validation-----------')
-        self.evaluator.reset()
-        dataset = MultimodalDamageAssessmentDatset(self.args.holdout_dataset_path, self.args.holdout_data_name_list, 1024, None, 'test')
-        holdout_data_loader = DataLoader(dataset, batch_size=self.args.eval_batch_size, num_workers=1, drop_last=False)
+        self.evaluator_total.reset()
+        self.evaluator_loc.reset()
+        self.evaluator_clf.reset()
+        val_dataset = MultimodalDamageAssessmentDatset(self.args.val_dataset_path, self.args.val_data_name_list, 1024, None, 'test')
+        val_data_loader = DataLoader(val_dataset, batch_size=self.args.eval_batch_size, num_workers=8, drop_last=False)
         torch.cuda.empty_cache()
 
         with torch.no_grad():
-            for _, data in enumerate(holdout_data_loader):
+            for _, data in enumerate(val_data_loader):
                 pre_change_imgs, post_change_imgs, labels_loc, labels_clf, _ = data
 
                 pre_change_imgs = pre_change_imgs.cuda()
@@ -153,23 +165,74 @@ class Trainer(object):
                 labels_loc = labels_loc.cuda().long()
                 labels_clf = labels_clf.cuda().long()
 
-                input_data = torch.cat([pre_change_imgs, post_change_imgs], dim=1) # if you use UNet
-                output_clf = self.deep_model(input_data)  # if you use UNet
+                # input_data = torch.cat([pre_change_imgs, post_change_imgs], dim=1) # if you use UNet
+                output_clf = self.deep_model(pre_change_imgs, post_change_imgs) # if you use UNet
                 # _, output_clf = self.deep_model(pre_change_imgs, post_change_imgs) # If you use SiamCRNN
 
-
+                labels_loc = labels_loc.cpu().numpy()
                 output_clf = output_clf.data.cpu().numpy()
                 output_clf = np.argmax(output_clf, axis=1)
                 labels_clf = labels_clf.cpu().numpy()
+                output_loc = output_clf.copy()
+                output_loc[output_loc > 0] = 1
+                self.evaluator_loc.add_batch(labels_loc, output_loc)
+                output_clf_damage_part = output_clf[labels_loc > 0]
+                labels_clf_damage_part = labels_clf[labels_loc > 0]
+                self.evaluator_clf.add_batch(labels_clf_damage_part, output_clf_damage_part)
+                self.evaluator_total.add_batch(labels_clf, output_clf)
 
-                self.evaluator.add_batch(labels_clf, output_clf)
+        loc_f1_score = self.evaluator_loc.Pixel_F1_score()
+        damage_f1_score = self.evaluator_clf.Damage_F1_score()
+        harmonic_mean_f1 = len(damage_f1_score) / np.sum(1.0 / damage_f1_score)
+        final_OA = self.evaluator_total.Pixel_Accuracy()
+        IoU_of_each_class = self.evaluator_total.Intersection_over_Union()
+        mIoU = self.evaluator_total.Mean_Intersection_over_Union()
+        print(f'loc f1 is {100 * loc_f1_score}, clf f1 is {100 * harmonic_mean_f1}, OA is {100 * final_OA}, mIoU is {100 * mIoU}, sub class IoU is {100 * IoU_of_each_class}')
+        return loc_f1_score, harmonic_mean_f1, final_OA, mIoU, IoU_of_each_class
+    
 
-        
-        final_OA = self.evaluator.Pixel_Accuracy()
-        IoU_of_each_class = self.evaluator.Intersection_over_Union()
-        mIoU = self.evaluator.Mean_Intersection_over_Union()
-        print(f'OA is {100 * final_OA}, mIoU is {100 * mIoU}, sub class IoU is {100 * IoU_of_each_class}')
-        return mIoU, final_OA, IoU_of_each_class
+    def test(self):
+        print('---------starting testing-----------')
+        self.evaluator_total.reset()
+        self.evaluator_loc.reset()
+        self.evaluator_clf.reset()
+        test_dataset = MultimodalDamageAssessmentDatset(self.args.test_dataset_path, self.args.test_data_name_list, 1024, None, 'test')
+        test_data_loader = DataLoader(test_dataset, batch_size=self.args.eval_batch_size, num_workers=8, drop_last=False)
+        torch.cuda.empty_cache()
+
+        with torch.no_grad():
+            for _, data in enumerate(test_data_loader):
+                pre_change_imgs, post_change_imgs, labels_loc, labels_clf, _ = data
+
+                pre_change_imgs = pre_change_imgs.cuda()
+                post_change_imgs = post_change_imgs.cuda()
+                labels_loc = labels_loc.cuda().long()
+                labels_clf = labels_clf.cuda().long()
+
+                # input_data = torch.cat([pre_change_imgs, post_change_imgs], dim=1) # if you use UNet
+                output_clf = self.deep_model(pre_change_imgs, post_change_imgs)  # if you use UNet
+                # _, output_clf = self.deep_model(pre_change_imgs, post_change_imgs) # If you use SiamCRNN
+
+                labels_loc = labels_loc.cpu().numpy()
+                output_clf = output_clf.data.cpu().numpy()
+                output_clf = np.argmax(output_clf, axis=1)
+                labels_clf = labels_clf.cpu().numpy()
+                output_loc = output_clf.copy()
+                output_loc[output_loc > 0] = 1
+                self.evaluator_loc.add_batch(labels_loc, output_loc)
+                output_clf_damage_part = output_clf[labels_loc > 0]
+                labels_clf_damage_part = labels_clf[labels_loc > 0]
+                self.evaluator_clf.add_batch(labels_clf_damage_part, output_clf_damage_part)
+                self.evaluator_total.add_batch(labels_clf, output_clf)
+
+        loc_f1_score = self.evaluator_loc.Pixel_F1_score()
+        damage_f1_score = self.evaluator_clf.Damage_F1_score()
+        harmonic_mean_f1 = len(damage_f1_score) / np.sum(1.0 / damage_f1_score)
+        final_OA = self.evaluator_total.Pixel_Accuracy()
+        IoU_of_each_class = self.evaluator_total.Intersection_over_Union()
+        mIoU = self.evaluator_total.Mean_Intersection_over_Union()
+        print(f'loc f1 is {100 * loc_f1_score}, clf f1 is {100 * harmonic_mean_f1}, OA is {100 * final_OA}, mIoU is {100 * mIoU}, sub class IoU is {100 * IoU_of_each_class}')
+        return loc_f1_score, harmonic_mean_f1, final_OA, mIoU, IoU_of_each_class
     
 
 def main():
@@ -179,15 +242,18 @@ def main():
     parser.add_argument('--dataset', type=str, default='BRIGHT')
     parser.add_argument('--train_dataset_path', type=str)
     parser.add_argument('--train_data_list_path', type=str)
-    parser.add_argument('--holdout_dataset_path', type=str)
-    parser.add_argument('--holdout_data_list_path', type=str)
+    parser.add_argument('--val_dataset_path', type=str)
+    parser.add_argument('--val_data_list_path', type=str)
+    parser.add_argument('--test_dataset_path', type=str)
+    parser.add_argument('--test_data_list_path', type=str)
     parser.add_argument('--train_batch_size', type=int, default=8)
     parser.add_argument('--eval_batch_size', type=int, default=1)
 
     parser.add_argument('--crop_size', type=int)
 
     parser.add_argument('--train_data_name_list', type=list)
-    parser.add_argument('--holdout_data_name_list', type=list)
+    parser.add_argument('--val_data_name_list', type=list)
+    parser.add_argument('--test_data_name_list', type=list)
 
     parser.add_argument('--start_iter', type=int, default=0)
     parser.add_argument('--cuda', type=bool, default=True)
@@ -207,9 +273,14 @@ def main():
         train_data_name_list = [data_name.strip() for data_name in f]
     args.train_data_name_list = train_data_name_list
 
-    with open(args.holdout_data_list_path, "r") as f:
-        holdout_data_name_list = [data_name.strip() for data_name in f]
-    args.holdout_data_name_list = holdout_data_name_list
+    with open(args.val_data_list_path, "r") as f:
+        val_data_name_list = [data_name.strip() for data_name in f]
+    args.val_data_name_list = val_data_name_list
+    
+
+    with open(args.test_data_list_path, "r") as f:
+        test_data_name_list = [data_name.strip() for data_name in f]
+    args.test_data_name_list = test_data_name_list
 
     trainer = Trainer(args)
     trainer.training()

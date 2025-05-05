@@ -41,7 +41,7 @@ class Evaluator(object):
         FPs = np.sum(self.confusion_matrix, axis=0)[1:] - TPs
         return TPs, FNs, FPs
     
-    def Damage_F1_socore(self):
+    def Damage_F1_score(self):
         TPs, FNs, FPs = self.calculate_per_class_metrics()
         precisions = TPs / (TPs + FPs + 1e-7)
         recalls = TPs / (TPs + FNs + 1e-7)

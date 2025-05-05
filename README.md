@@ -30,7 +30,7 @@
 * [**BRIGHT**](https://arxiv.org/abs/2501.06019) is the first open-access, globally distributed, event-diverse multimodal dataset specifically curated to support AI-based disaster response. It covers **five** types of natural disasters and **two** types of man-made disasters across **14** disaster events in **23** regions worldwide, with a particular focus on developing countries. 
 
 
-* It supports not only the development of *supervised deep models*, but also the testing of their performance on *cross-event transfer* setup, as well as *unsupervised domain adaptation*, *semi-supervised learning*, *unsupervised change detection*, and *unsupervised image matching* methods in multimodal and disaster scenarios.
+* It supports not only the development of **supervised** deep models, but also the testing of their performance on **cross-event transfer** setup, as well as **unsupervised domain adaptation**, **semi-supervised learning**, **unsupervised change detection**, and **unsupervised image matching** methods in multimodal and disaster scenarios.
 
 <p align="center">
   <img src="./figure/overall.jpg" alt="accuracy" width="97%">
@@ -38,8 +38,8 @@
 
 ## 📋To Do List
 
-- [ ] Release the data in Ukraine, Mexico and Myanmar. 
-- [ ] Release the code for cross-event transfer. 
+- [x] Release the data in Ukraine, Mexico and Myanmar. 
+- [x] Release the code for cross-event transfer. 
 - [x] Release the [code](umcd_benchmark/README.md) for unsupervised multimodal change detection. 
 - [x] Release the [code](umim_benchmark/README.md) and [data](https://zenodo.org/records/15322113) for unsupervised multimodal image matching.
 - [x] Release the [validation and test labels](https://zenodo.org/records/15322113) of IEEE GRSS DFC 2025. 
@@ -78,73 +78,71 @@ pip install -r requirements.txt
 
 
 ### `B. Data Preparation`
-Please download the BRIGHT from [Zenodo](https://zenodo.org/records/15322113) or [HuggingFace](https://huggingface.co/datasets/Kullervo/BRIGHT) and make them have the following folder/file structure:
+Please download the BRIGHT from [Zenodo](https://zenodo.org/records/15322113) or [HuggingFace](https://huggingface.co/datasets/Kullervo/BRIGHT). Note that we cannot redistribute the optical data over Ukraine, Myanmar, and Mexico. Please follow our [tutorial]() to download and preprocess them. 
+
+After the data has been prepared, please make them have the following folder/file structure:
 ```
-${DATASET_ROOT}   # Dataset root directory, for example: /home/username/data/dfc25_track2_trainval
+${DATASET_ROOT}   # Dataset root directory, for example: /home/username/data/bright
 │
-├── train
-│    ├── pre-event
-│    │    ├──bata-explosion_00000000_pre_disaster.tif
-│    │    ├──bata-explosion_00000001_pre_disaster.tif
-│    │    ├──bata-explosion_00000002_pre_disaster.tif
-│    │   ...
-│    │
-│    ├── post-event
-│    │    ├──bata-explosion_00000000_post_disaster.tif
-│    │    ... 
-│    │
-│    └── target
-│         ├──bata-explosion_00000000_building_damage.tif 
-│         ...   
-│   
-└── val
-     ├── pre-event
-     │    ├──bata-explosion_00000003_pre_disaster.tif
-     │   ...
-     │
-     └── post-event
-          ├──bata-explosion_00000003_post_disaster.tif
-         ...
+├── pre-event
+│    ├──bata-explosion_00000000_pre_disaster.tif
+│    ├──bata-explosion_00000001_pre_disaster.tif
+│    ├──bata-explosion_00000002_pre_disaster.tif
+│   ...
+│
+├── post-event
+│    ├──bata-explosion_00000000_post_disaster.tif
+│    ... 
+│
+└── target
+     ├──bata-explosion_00000000_building_damage.tif 
+     ...   
 ```
 
 ### `C. Model Training & Tuning`
 
-The following commands show how to train and evaluate UNet on the BRIGHT dataset using our standard ML split set in [`dfc25_benchmark/dataset/splitname`]:
+The following commands show how to train and evaluate UNet on the BRIGHT dataset using our standard ML split set in [`bda_benchmark/dataset/splitname`]:
 
 ```bash
-python script/train_baseline_network.py  --dataset 'BRIGHT' \
-                                          --train_batch_size 16 \
-                                          --eval_batch_size 4 \
-                                          --num_workers 1 \
-                                          --crop_size 640 \
-                                          --max_iters 800000 \
-                                          --learning_rate 1e-4 \
-                                          --model_type 'UNet' \
-                                          --train_dataset_path '<your dataset path>/train' \
-                                          --train_data_list_path '<your project path>/dfc25_benchmark/dataset/splitname/train_setlevel.txt' \
-                                          --holdout_dataset_path '<your dataset path>/train' \
-                                          --holdout_data_list_path '<your project path>/dfc25_benchmark/dataset/splitname/holdout_setlevel.txt' 
+python script/standard_ML/train_UNet.py --dataset 'BRIGHT' \
+                                        --train_batch_size 16 \
+                                        --eval_batch_size 4 \
+                                        --num_workers 16 \
+                                        --crop_size 640 \
+                                        --max_iters 800000 \
+                                        --learning_rate 1e-4 \
+                                        --model_type 'UNet' \
+                                        --model_param_path '<your model checkpoint saved path>' \
+                                        --train_dataset_path '<your dataset path>' \
+                                        --train_data_list_path '<your project path>/bda_benchmark/dataset/splitname/standard_ML/train_set.txt' \
+                                        --val_dataset_path '<your dataset path>' \
+                                        --val_data_list_path '<your project path>/bda_benchmark/dataset/splitname/standard_ML/val_set.txt' \
+                                        --test_dataset_path '<your dataset path>' \
+                                        --test_data_list_path '<your project path>/bda_benchmark/dataset/splitname/standard_ML/test_set.txt' 
 ```
 
 
 ### `D. Inference & Evaluation`
-For current development stage and subsequent test stage, you can run the following code to generate raw & visualized prediction results and evaluate performance
-```bash
-python script/infer_using_baseline_network.py  --val_dataset_path '<your dataset path>/val' \
-                                               --val_data_list_path '<your project path>/dfc25_benchmark/dataset/splitname/val_setlevel.txt' \
-                                               --existing_weight_path '<your trained model path>' \
-                                               --inferece_saved_path '<your inference results saved path>'
-```
+Then, you can run the following code to generate raw & visualized prediction results and evaluate performance. You can download the checkpoint in our paper in [Zenodo]() or [HuggingFace](). 
 
+```bash
+python script/standard_ML/infer_UNet.py --model_path  '<path of the checkpoint of model>' \
+                                        --test_dataset_path '<your dataset path>' \
+                                        --test_data_list_path '<your project path>/bda_benchmark/dataset/splitname/standard_ML/test_set.txt' \
+                                        --output_dir '<your inference results saved path>'
+```
 
 ### `E. Other Benchmarks & Setup` (🛠️Under Construction)
 In addition to the above supervised deep models, BRIGHT also provides standardized evaluation setups for several important learning paradigms and multimodal EO tasks:
 
-* [`Cross-event transfer setup`](): Evaluate model generalization across disaster types and regions. This setup simulates real-world scenarios where no labeled data (**zero-shot**) or limited labeled data (**one-shot**) is available for the target event during training. 
+* [`Cross-event transfer setup`](bda_benchmark/README_cross_event.md): Evaluate model generalization across disaster types and regions. This setup simulates real-world scenarios where no labeled data (**zero-shot**) or limited labeled data (**one-shot**) is available for the target event during training. 
 
-* [`Unsupervised domain adaptation`](): Adapt models trained on source disaster events to unseen target events without any target labels, using UDA techniques under the **zero-shot** cross-event setting.
+* [`Unsupervised domain adaptation`](bda_benchmark/README_cross_event.md): Adapt models trained on source disaster events to unseen target events without any target labels, using UDA techniques under the **zero-shot** cross-event setting.
 
-* [`Semi-supervised learning`](): Leverage a small number of labeled samples and a larger set of unlabeled samples from the target event to improve performance under the **one-shot** cross-event setting.
+* [`Semi-supervised learning`](bda_benchmark/README_cross_event.md): Leverage a small number of labeled samples and a larger set of unlabeled samples from the target event to improve performance under the **one-shot** cross-event setting.
+
+
+* [`IEEE GRSS DFC 2025 Trakc II`](): The Track II of [IEEE GRSS DFC 2025](https://www.grss-ieee.org/technical-committees/image-analysis-and-data-fusion/) also belong to this setup.
 
 * [`Unsupervised multimodal change detection`](umcd_benchmark/README.md): Detect disaster-induced building changes without using any labels. This setup supports benchmarking of general-purpose change detection algorithms under realistic large-scale disaster scenarios.
 
