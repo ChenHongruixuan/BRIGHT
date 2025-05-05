@@ -131,6 +131,14 @@ Then, you can still go to the official [Leaderboard](https://codalab.lisn.upsacl
 * `All png files should be submitted in zip file format. Zip all prediction files directly without any folders containing them.`
 * `Using the raw prediction results instead of visualized ones.`
 
+## 🤔Common Issues
+Based on peers' questions from [issue section](https://github.com/ChenHongruixuan/BRIGHT/issues), here's a quick navigate list of solutions to some common issues.
+
+| Issue | Solution | 
+| :---: | :---: | 
+|  Abnormal accuracy (like 0 or -999999) given by leaderboard   |   Keep the prediction name and label name consistent / Zip all prediction files directly, not the folder containing them     |
+|  Leaderboard server not responding after submitting results   |   Change browser (Google Chrome recommended)     |
+|  Python package conflicts   |   The baseline code is not limited to a specific version, and participants do not need to match the version we provide.     |
 
 
 ## 📜Reference
@@ -145,6 +153,8 @@ If this dataset or code contributes to your research, please kindly consider cit
       url={https://arxiv.org/abs/2501.06019}, 
 }
 ```
+
+
 
 ## 🤝Acknowledgments
 The authors would also like to give special thanks to [Sarah Preston](https://www.linkedin.com/in/sarahjpreston/) of Capella Space, [Capella Space's Open Data Gallery](https://www.capellaspace.com/earth-observation/gallery), [Maxar Open Data Program](https://www.maxar.com/open-data) and [Umbra Space's Open Data Program](https://umbra.space/open-data/) for providing the valuable data.

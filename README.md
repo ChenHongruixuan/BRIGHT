@@ -19,9 +19,9 @@
 </div>
 
 ## 🛎️Updates
-* **` Notice☀️☀️`**: The [full version of the BRIGHT paper](https://arxiv.org/abs/2501.06019) are now online!!
+* **` Notice☀️☀️`**: The [full version of the BRIGHT paper](https://arxiv.org/abs/2501.06019) are now online!! The contents related to IEEE GRSS DFC 2025 has been transferred to [here](bda_benchmark/README_DFC25.md)!!
 * **` May 05th, 2025`**: All the data and benchmark code related to our paper has now released. You are warmly welcome to use them!!
-* **` Apr 28th, 2025`**: IEEE GRSS DFC 2025 Track II is over. Congratulations to [winners](https://www.grss-ieee.org/community/technical-committees/winners-of-the-2025-ieee-grss-data-fusion-contest-all-weather-land-cover-and-building-damage-mapping/)!! You can now download the full version of DFC 2025 Track II data in [Zenodo](https://zenodo.org/records/15335889) or [HuggingFace](https://huggingface.co/datasets/Kullervo/BRIGHT)!!
+* **` Apr 28th, 2025`**: IEEE GRSS DFC 2025 Track II is over. Congratulations to [winners](https://www.grss-ieee.org/community/technical-committees/winners-of-the-2025-ieee-grss-data-fusion-contest-all-weather-land-cover-and-building-damage-mapping/)!! You can now download the full version of DFC 2025 Track II data in [Zenodo](https://zenodo.org/records/15335889) or [HuggingFace](https://huggingface.co/datasets/Kullervo/BRIGHT)!! 
 * **` Jan 18th, 2025`**: BRIGHT has been integrated into [TorchGeo](https://github.com/microsoft/torchgeo). Many thanks for the effort of [Nils Lehmann](https://github.com/nilsleh)!!
 * **` Jan 13th, 2025`**: The [arXiv paper](https://arxiv.org/abs/2501.06019) of BRIGHT is now online. If you are interested in details of BRIGHT, do not hesitate to take a look!!
 
@@ -135,12 +135,11 @@ In addition to the above supervised deep models, BRIGHT also provides standardiz
 
 * [`Semi-supervised learning`](bda_benchmark/README_cross_event.md): Leverage a small number of labeled samples and a larger set of unlabeled samples from the target event to improve performance under the **one-shot** cross-event setting.
 
-
-* [`IEEE GRSS DFC 2025 Trakc II`](bda_benchmark/README_DFC25.md): The Track II of [IEEE GRSS DFC 2025](https://www.grss-ieee.org/technical-committees/image-analysis-and-data-fusion/) aims to develop methods for assessing building damage using bi-temporal multimodal images.
-
 * [`Unsupervised multimodal change detection`](umcd_benchmark/README.md): Detect disaster-induced building changes without using any labels. This setup supports benchmarking of general-purpose change detection algorithms under realistic large-scale disaster scenarios.
 
 * [`Unsupervised multimodal image matching`](umim_benchmark/README.md): Evaluate the performance of matching algorithms in aligning **raw, large-scale** optical and SAR images based on **manual-control-point**-based registration accuracy. This setup focuses on realistic multimodal alignment in disaster-affected areas.
+
+* [`IEEE GRSS DFC 2025 Track II`](bda_benchmark/README_DFC25.md): The Track II of [IEEE GRSS DFC 2025](https://www.grss-ieee.org/technical-committees/image-analysis-and-data-fusion/) aims to develop robust and generalizable methods for assessing building damage using bi-temporal multimodal images on unseen disaster events.
 
 
 
@@ -149,8 +148,6 @@ Based on peers' questions from [issue section](https://github.com/ChenHongruixua
 
 | Issue | Solution | 
 | :---: | :---: | 
-|  Abnormal accuracy (like 0 or -999999) given by leaderboard   |   Keep the prediction name and label name consistent / Zip all prediction files directly, not the folder containing them     |
-|  Leaderboard server not responding after submitting results   |   Change browser (Google Chrome recommended)     |
 |  Python package conflicts   |   The baseline code is not limited to a specific version, and participants do not need to match the version we provide.     |
 
 
