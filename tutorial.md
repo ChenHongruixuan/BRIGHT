@@ -1,6 +1,6 @@
 ## 📡 Optical Image Preprocessing Tutorial
 
-This tutorial describes the step-by-step process to **acquire** and **preprocess** optical images over **Ukraine, Myanmar, and Mexico** in BRIGHT. First, please make sure you have downloaded BRIGHT and kmz files (named `aoi_reference_kmz.zip`) from [Zenodo](https://zenodo.org/records/15335889) or [HuggingFace](https://huggingface.co/datasets/Kullervo/BRIGHT). 
+This tutorial describes the step-by-step process to **acquire** and **preprocess** optical images over **Ukraine, Myanmar, and Mexico** in BRIGHT. First, please make sure you have downloaded BRIGHT and kmz files (named `aoi_reference_kmz.zip`) from [Zenodo](https://zenodo.org/records/14619797) or [HuggingFace](https://huggingface.co/datasets/Kullervo/BRIGHT). 
 
 
 
