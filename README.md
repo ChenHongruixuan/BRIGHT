@@ -72,7 +72,7 @@ pip install -r requirements.txt
 
 
 ### `B. Data Preparation`
-Please download the BRIGHT from [Zenodo](https://zenodo.org/records/15335889) or [HuggingFace](https://huggingface.co/datasets/Kullervo/BRIGHT). Note that we cannot redistribute the optical data over Ukraine, Myanmar, and Mexico. Please follow our [tutorial]() to download and preprocess them. 
+Please download the BRIGHT from [Zenodo](https://zenodo.org/records/15335889) or [HuggingFace](https://huggingface.co/datasets/Kullervo/BRIGHT). Note that we cannot redistribute the optical data over Ukraine, Myanmar, and Mexico. Please follow our [tutorial](./tutorial.md) to download and preprocess them. 
 
 After the data has been prepared, please make them have the following folder/file structure:
 ```
