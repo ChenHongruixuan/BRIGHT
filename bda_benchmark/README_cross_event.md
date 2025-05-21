@@ -156,7 +156,7 @@ python script/cross_event/one_shot/train_DamageFormer.py  --dataset 'BRIGHT' \
                                                           --val_data_list_path '<your project path>/bda_benchmark/dataset/splitname/standard_ML/val_set.txt' \
                                                           --test_dataset_path '<your dataset path>' \
                                                           --test_data_list_path '<your project path>/bda_benchmark/dataset/splitname/standard_ML/test_set.txt' \
-                                                          -train_data_list_path_few_shot '<your project path>/bda_benchmark/dataset/splitname/few_shot/train_set.txt' \
+                                                          --train_data_list_path_few_shot '<your project path>/bda_benchmark/dataset/splitname/few_shot/train_set.txt' \
                                                           --val_data_list_path_few_shot '<your project path>/bda_benchmark/dataset/splitname/few_shot/val_set.txt' \
                                                           --test_event_name 'hawaii-wildfire'
 ```
@@ -179,7 +179,7 @@ python script/cross_event/one_shot/train_MeanTeacher.py --dataset 'BRIGHT' \
                                                         --val_data_list_path '<your project path>/bda_benchmark/dataset/splitname/standard_ML/val_set.txt' \
                                                         --test_dataset_path '<your dataset path>' \
                                                         --test_data_list_path '<your project path>/bda_benchmark/dataset/splitname/standard_ML/test_set.txt' \
-                                                        -train_data_list_path_few_shot '<your project path>/bda_benchmark/dataset/splitname/few_shot/train_set.txt' \
+                                                        --train_data_list_path_few_shot '<your project path>/bda_benchmark/dataset/splitname/few_shot/train_set.txt' \
                                                         --val_data_list_path_few_shot '<your project path>/bda_benchmark/dataset/splitname/few_shot/val_set.txt' \
                                                         --test_event_name 'hawaii-wildfire'
 ```
