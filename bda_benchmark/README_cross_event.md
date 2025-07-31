@@ -18,7 +18,7 @@
 </div>
 
 ## 🛎️Updates
-* **` Notice☀️☀️`**: The [full version of the BRIGHT paper](https://arxiv.org/abs/2501.06019) are now online. Related data and benchmark suites will be released soon!!
+* **` Notice☀️☀️`**: The [full version of the BRIGHT paper](https://arxiv.org/abs/2501.06019) is now online. Related data and benchmark suites will be released soon!!
 * **` May 5th, 2025`**: The code for cross-event transfer has been uploaded!!
 
 ## 🔭Overview

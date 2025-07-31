@@ -18,7 +18,7 @@
 </div>
 
 ## 🛎️Updates
-* **` Notice☀️☀️`**: The [full version of the BRIGHT paper](https://arxiv.org/abs/2501.06019) are now online. Related data and benchmark suites will be released soon!!
+* **` Notice☀️☀️`**: The [full version of the BRIGHT paper](https://arxiv.org/abs/2501.06019) is now online. Related data and benchmark suites will be released soon!!
 * **` May 2nd, 2025`**: The code for unsupervised multimodal change detection has been uploaded!!
 
 

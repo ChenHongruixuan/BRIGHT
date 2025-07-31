@@ -18,7 +18,7 @@
 </div>
 
 ## 🛎️Updates
-* **` Notice☀️☀️`**: The [full version of the BRIGHT paper](https://arxiv.org/abs/2501.06019) are now online. Related data and benchmark suites will be released soon!!
+* **` Notice☀️☀️`**: The [full version of the BRIGHT paper](https://arxiv.org/abs/2501.06019) is now online. Related data and benchmark suites will be released soon!!
 * **` Apr 28th, 2025`**: The data for unsupervised multimodal image matching has been uploaded to [Zenodo](https://zenodo.org/records/14619797) and [HuggingFace](https://huggingface.co/datasets/Kullervo/BRIGHT)!!
 
 
