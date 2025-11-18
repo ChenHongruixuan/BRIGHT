@@ -88,12 +88,15 @@ Some parameters will affect the registration performance. For example, you can c
 
 If this dataset or code contributes to your research, please kindly consider citing our paper and give this repo ⭐️ :)
 ```
-@article{chen2025bright,
-      title={BRIGHT: A globally distributed multimodal building damage assessment dataset with very-high-resolution for all-weather disaster response}, 
-      author={Hongruixuan Chen and Jian Song and Olivier Dietrich and Clifford Broni-Bediako and Weihao Xuan and Junjue Wang and Xinlei Shao and Yimin Wei and Junshi Xia and Cuiling Lan and Konrad Schindler and Naoto Yokoya},
-      journal={arXiv preprint arXiv:2501.06019},
-      year={2025},
-      url={https://arxiv.org/abs/2501.06019}, 
+@Article{Chen2025Bright,
+    AUTHOR = {Chen, H. and Song, J. and Dietrich, O. and Broni-Bediako, C. and Xuan, W. and Wang, J. and Shao, X. and Wei, Y. and Xia, J. and Lan, C. and Schindler, K. and Yokoya, N.},
+    TITLE = {\textsc{Bright}: a globally distributed multimodal building damage assessment dataset with very-high-resolution for all-weather disaster response},
+    JOURNAL = {Earth System Science Data},
+    VOLUME = {17},
+    YEAR = {2025},
+    NUMBER = {11},
+    PAGES = {6217--6253},
+    DOI = {10.5194/essd-17-6217-2025}
 }
 ```
 
