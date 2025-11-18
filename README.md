@@ -29,7 +29,7 @@
 
 ## 🔭Overview
 
-* [**BRIGHT**](https://arxiv.org/abs/2501.06019) is the first open-access, globally distributed, event-diverse multimodal dataset specifically curated to support AI-based disaster response. It covers **five** types of natural disasters and **two** types of man-made disasters across **14** disaster events in **23** regions worldwide, with a particular focus on developing countries. 
+* [**BRIGHT**](https://essd.copernicus.org/articles/17/6217/2025/essd-17-6217-2025.html) is the first open-access, globally distributed, event-diverse multimodal dataset specifically curated to support AI-based disaster response. It covers **five** types of natural disasters and **two** types of man-made disasters across **14** disaster events in **23** regions worldwide, with a particular focus on developing countries. 
 
 
 * It supports not only the development of **supervised** deep models, but also the testing of their performance on **cross-event transfer** setup, as well as **unsupervised domain adaptation**, **semi-supervised learning**, **unsupervised change detection**, and **unsupervised image matching** methods in multimodal and disaster scenarios.
