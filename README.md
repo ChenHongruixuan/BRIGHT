@@ -13,7 +13,7 @@
 [![ESSD paper](https://img.shields.io/badge/ESSD-paper-cyan)](https://essd.copernicus.org/articles/17/6217/2025/essd-17-6217-2025.html) [![arXiv paper](https://img.shields.io/badge/arXiv-paper-b31b1b.svg)](https://arxiv.org/abs/2501.06019) [![Zenodo Dataset](https://img.shields.io/badge/Zenodo-Dataset-blue)](https://zenodo.org/records/14619797)   [![HuggingFace Dataset](https://img.shields.io/badge/HuggingFace-Dataset-yellow)](https://huggingface.co/datasets/Kullervo/BRIGHT) [![Zenodo Model](https://img.shields.io/badge/Zenodo-Model-green)](https://zenodo.org/records/15349462) ![visitors](https://visitor-badge.laobi.icu/badge?page_id=ChenHongruixuan.BRIGHT&left_color=%2363C7E6&right_color=%23CEE75F)
 
 
-[**Overview**](#overview) | [**Start BRIGHT**](#%EF%B8%8Flets-get-started-with-bright) | [**Common Issues**](#common-issues) | [**Follow-Ups**](#common-issues) | [**Others**](#q--a) 
+[**Overview**](#overview) | [**Start BRIGHT**](#%EF%B8%8Flets-get-started-with-bright) | [**Common Issues**](#common-issues) | [**Follow-Ups**](#works-based-on-bright) | [**Others**](#q--a) 
 
 
 </div>
@@ -174,7 +174,7 @@ If this dataset or code contributes to your research, please kindly consider cit
     DOI = {10.5194/essd-17-6217-2025}
 }
 ```
-
+<a name="works-based-on-bright"></a>
 ## 🏢 Works Building on BRIGHT
 
 We are delighted to see BRIGHT supporting various research directions. Below is a curated list of papers, benchmarks, and projects that build upon or integrate BRIGHT.
