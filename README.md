@@ -159,21 +159,6 @@ Based on peers' questions from [issue section](https://github.com/ChenHongruixua
 
 
 
-## 📜Reference
-
-If this dataset or code contributes to your research, please kindly consider citing our paper and give this repo ⭐️ :)
-```
-@Article{Chen2025Bright,
-    AUTHOR = {Chen, H. and Song, J. and Dietrich, O. and Broni-Bediako, C. and Xuan, W. and Wang, J. and Shao, X. and Wei, Y. and Xia, J. and Lan, C. and Schindler, K. and Yokoya, N.},
-    TITLE = {\textsc{Bright}: a globally distributed multimodal building damage assessment dataset with very-high-resolution for all-weather disaster response},
-    JOURNAL = {Earth System Science Data},
-    VOLUME = {17},
-    YEAR = {2025},
-    NUMBER = {11},
-    PAGES = {6217--6253},
-    DOI = {10.5194/essd-17-6217-2025}
-}
-```
 <a name="works-based-on-bright"></a>
 ## 🏢 Works Building on BRIGHT
 
@@ -189,6 +174,21 @@ We are delighted to see BRIGHT supporting various research directions. Below is 
 | [SARCLIP](https://www.sciencedirect.com/science/article/abs/pii/S0924271625004058?casa_token=Me5Re2GtLtkAAAAA:GSuTBIYOaUZca12HXxUV2ZEeASsz9-TD6u7F5iqh4GIu3j0Vq2vXLc5Jz4thAdYpS1VmZtfZuks) | Algorithm & Benchmark | ISPRS J P&RS 2025 | [Data & Code](https://github.com/CAESAR-Radi/SARCLIP) | Proposed multimodal foundation model (SARCLIP) and 400k dataset for SAR analysis |
 
 
+## 📜Reference
+
+If this dataset or code contributes to your research, please kindly consider citing our paper and give this repo ⭐️ :)
+```
+@Article{Chen2025Bright,
+    AUTHOR = {Chen, H. and Song, J. and Dietrich, O. and Broni-Bediako, C. and Xuan, W. and Wang, J. and Shao, X. and Wei, Y. and Xia, J. and Lan, C. and Schindler, K. and Yokoya, N.},
+    TITLE = {\textsc{Bright}: a globally distributed multimodal building damage assessment dataset with very-high-resolution for all-weather disaster response},
+    JOURNAL = {Earth System Science Data},
+    VOLUME = {17},
+    YEAR = {2025},
+    NUMBER = {11},
+    PAGES = {6217--6253},
+    DOI = {10.5194/essd-17-6217-2025}
+}
+```
 
 ## 🤝Acknowledgments
 The authors would also like to give special thanks to [Sarah Preston](https://www.linkedin.com/in/sarahjpreston/) of Capella Space, [Capella Space's Open Data Gallery](https://www.capellaspace.com/earth-observation/gallery), [Maxar Open Data Program](https://www.maxar.com/open-data) and [Umbra Space's Open Data Program](https://umbra.space/open-data/) for providing the valuable data.
