@@ -13,7 +13,7 @@
 [![ESSD paper](https://img.shields.io/badge/ESSD-paper-cyan)](https://essd.copernicus.org/articles/17/6217/2025/essd-17-6217-2025.html) [![arXiv paper](https://img.shields.io/badge/arXiv-paper-b31b1b.svg)](https://arxiv.org/abs/2501.06019) [![Zenodo Dataset](https://img.shields.io/badge/Zenodo-Dataset-blue)](https://zenodo.org/records/14619797)   [![HuggingFace Dataset](https://img.shields.io/badge/HuggingFace-Dataset-yellow)](https://huggingface.co/datasets/Kullervo/BRIGHT) [![Zenodo Model](https://img.shields.io/badge/Zenodo-Model-green)](https://zenodo.org/records/15349462) ![visitors](https://visitor-badge.laobi.icu/badge?page_id=ChenHongruixuan.BRIGHT&left_color=%2363C7E6&right_color=%23CEE75F)
 
 
-[**Overview**](#overview) | [**Start BRIGHT**](#%EF%B8%8Flets-get-started-with-bright) | [**Common Issues**](#common-issues) | [**Others**](#q--a) 
+[**Overview**](#overview) | [**Start BRIGHT**](#%EF%B8%8Flets-get-started-with-bright) | [**Common Issues**](#common-issues) | [**Follow-Ups**](#common-issues) | [**Others**](#q--a) 
 
 
 </div>
@@ -174,6 +174,21 @@ If this dataset or code contributes to your research, please kindly consider cit
     DOI = {10.5194/essd-17-6217-2025}
 }
 ```
+
+## 🏢 Works Building on BRIGHT
+
+We are delighted to see BRIGHT supporting various research directions. Below is a curated list of papers, benchmarks, and projects that build upon or integrate BRIGHT.
+
+| Work | Category | Venue | Link | Key Contribution |
+| :--- | :--- | :--- | :--- | :--- |
+| [DisasterM3](https://arxiv.org/abs/2505.21089) | Benchmark | NeurIPS 2025 | [Data & Code](https://github.com/Junjue-Wang/DisasterM3) | Constructed DisasterM3, a multi-sensor vision-language dataset (123k pairs) for VLM-based disaster response |
+| [SARLANG-1M](https://arxiv.org/abs/2504.03254) | Benchmark | IEEE TGRS 2025 | [Data & Code](https://github.com/Jimmyxichen/SARLANG-1M) | Constructed a large-scale SAR-text benchmark (1M+ pairs) for multimodal understanding |
+| [CDPrompt](https://ieeexplore.ieee.org/stamp/stamp.jsp?arnumber=11124938) | Algorithm | IEEE TGRS 2025 | [Data & Code](https://github.com/zhanglimeng13/CDPrompt) | Proposed CDPrompt framework and Bright-Extended dataset for multimodal change detection |
+| [TSIG-GAN](https://www.tandfonline.com/doi/full/10.1080/15481603.2025.2565866) | Algorithm | GIS&RS 2025 | [Data & Code](https://github.com/zhanglimeng13/CDPrompt) | Proposed TSIG-GAN for fine-grained multimodal change detection via texture-structure interaction |
+| [DCIBCD](https://www.sciencedirect.com/science/article/abs/pii/S0957417425038254?casa_token=onOKvc35UFgAAAAA:RhYaQq7-C3igbXqZn1-9vJNg6wCw-XoDytNaiytUeUL4xVscWkAXyPM1OluFmovaAP09aAni-KI) | Algorithm | ESWA 2025 | [Code](https://github.com/AIBox-IMU/Computer-Vision/tree/main/DCIBCD) | Proposed a dual-branch model mitigating bidirectional interference in change detection |
+| [SARCLIP](https://www.sciencedirect.com/science/article/abs/pii/S0924271625004058?casa_token=Me5Re2GtLtkAAAAA:GSuTBIYOaUZca12HXxUV2ZEeASsz9-TD6u7F5iqh4GIu3j0Vq2vXLc5Jz4thAdYpS1VmZtfZuks) | Algorithm & Benchmark | ISPRS J P&RS 2025 | [Data & Code](https://github.com/CAESAR-Radi/SARCLIP) | Proposed multimodal foundation model (SARCLIP) and 400k dataset for SAR analysis |
+
+
 
 ## 🤝Acknowledgments
 The authors would also like to give special thanks to [Sarah Preston](https://www.linkedin.com/in/sarahjpreston/) of Capella Space, [Capella Space's Open Data Gallery](https://www.capellaspace.com/earth-observation/gallery), [Maxar Open Data Program](https://www.maxar.com/open-data) and [Umbra Space's Open Data Program](https://umbra.space/open-data/) for providing the valuable data.
