@@ -166,16 +166,17 @@ We are delighted to see BRIGHT supporting various research directions. Below is 
 
 | Work | Category | Venue | Link | Key Contribution |
 | :--- | :--- | :--- | :--- | :--- |
+| [CDML](https://ieeexplore.ieee.org/document/11359959) | Algorithm & Benchmark  | IEEE TPAMI  2026 | [Code](https://github.com/lyxdlut/CDML) | Proposed a first-order cross-domain meta-learning framework for few-shot remote sensing classification |
+| [SARCLIP](https://www.sciencedirect.com/science/article/abs/pii/S0924271625004058?casa_token=Me5Re2GtLtkAAAAA:GSuTBIYOaUZca12HXxUV2ZEeASsz9-TD6u7F5iqh4GIu3j0Vq2vXLc5Jz4thAdYpS1VmZtfZuks) | Algorithm & Benchmark | ISPRS J P&RS 2025 | [Data & Code](https://github.com/CAESAR-Radi/SARCLIP) | Proposed multimodal foundation model (SARCLIP) and 400k dataset for SAR analysis |
 | [DisasterM3](https://arxiv.org/abs/2505.21089) | Benchmark | NeurIPS 2025 | [Data & Code](https://github.com/Junjue-Wang/DisasterM3) | Constructed DisasterM3, a multi-sensor vision-language dataset (123k pairs) for VLM-based disaster response |
 | [SARLANG-1M](https://ieeexplore.ieee.org/document/11341914) | Benchmark | IEEE TGRS 2026 | [Data & Code](https://github.com/Jimmyxichen/SARLANG-1M) | Constructed a large-scale SAR-text benchmark (1M+ pairs) for multimodal understanding |
+| [IM4CD](https://www.sciencedirect.com/science/article/pii/S0924271626000559) | Algorithm  | ISPRS J P&RS 2026 | - | Proposed an unsupervised framework that unifies multimodal change detection and image matching to robustly identify changes across different modalities |
 | [FlowMamba](https://ieeexplore.ieee.org/document/11299103) | Algorithm  | IEEE TCSVT  2026 | [Code](https://github.com/flying318/FlowMamba) | Proposed a Mamba-based network handling image misalignment for building damage assessment |
 | [DSTCD](https://www.sciencedirect.com/science/article/pii/S1569843226000166) | Algorithm  | JAG 2026 | [Code](https://github.com/Lucky-DW/DSTCD) | Proposed a dual-stage framework transferring registration features for few-shot optical-SAR change detection in disaster monitoring |
 | [DDCL-GAN](https://www-sciencedirect-com.utokyo.idm.oclc.org/science/article/pii/S095741742504610X) | Algorithm | ESWA 2026 |  | Proposed a dual-domain contrastive learning framework for unsupervised multimodal change detection |
 | [CDPrompt](https://ieeexplore.ieee.org/stamp/stamp.jsp?arnumber=11124938) | Algorithm | IEEE TGRS 2025 | [Data & Code](https://github.com/zhanglimeng13/CDPrompt) | Proposed CDPrompt framework and Bright-Extended dataset for multimodal change detection |
 | [TSIG-GAN](https://www.tandfonline.com/doi/full/10.1080/15481603.2025.2565866) | Algorithm | GIS&RS 2025 | - | Proposed TSIG-GAN for fine-grained multimodal change detection via texture-structure interaction |
 | [DCIBCD](https://www.sciencedirect.com/science/article/abs/pii/S0957417425038254?casa_token=onOKvc35UFgAAAAA:RhYaQq7-C3igbXqZn1-9vJNg6wCw-XoDytNaiytUeUL4xVscWkAXyPM1OluFmovaAP09aAni-KI) | Algorithm | ESWA 2025 | [Code](https://github.com/AIBox-IMU/Computer-Vision/tree/main/DCIBCD) | Proposed a dual-branch model mitigating bidirectional interference in change detection |
-| [SARCLIP](https://www.sciencedirect.com/science/article/abs/pii/S0924271625004058?casa_token=Me5Re2GtLtkAAAAA:GSuTBIYOaUZca12HXxUV2ZEeASsz9-TD6u7F5iqh4GIu3j0Vq2vXLc5Jz4thAdYpS1VmZtfZuks) | Algorithm & Benchmark | ISPRS J P&RS 2025 | [Data & Code](https://github.com/CAESAR-Radi/SARCLIP) | Proposed multimodal foundation model (SARCLIP) and 400k dataset for SAR analysis |
-
 
 ## 📜Reference
 
