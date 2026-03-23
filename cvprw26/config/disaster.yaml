@@ -1,0 +1,54 @@
+data:
+  root: /data/ggeoinfo/datasets/BRIGHT                         # change it to your own dict
+  images_dir: post-event                    # post-event SAR directory 
+  pre_event_dir: pre-event                  # post-event SAR directory
+  train_ann: data/instance_annotations/train.json
+  val_ann: data/instance_annotations/val.json
+  holdout_manifest: data/instance_annotations/holdout.json   # images-only COCO manifest for public inference
+  # Per-channel normalization: [R, G, B, SAR]
+  pixel_mean: [0.485, 0.456, 0.406, 0.222836]
+  pixel_std: [0.229, 0.224, 0.225, 0.179825]
+
+model:
+  num_classes: 4
+  pretrained: true
+  box_detections_per_img: 1500
+  rpn_pre_nms_top_n_test: 1500
+  rpn_post_nms_top_n_test: 1500
+
+train:
+  epochs: 100
+  batch_size: 16
+  lr: 0.02
+  momentum: 0.9
+  weight_decay: 0.0001
+  lr_steps: [20, 35]
+  lr_gamma: 0.1
+  warmup_iters: 1000
+  warmup_factor: 0.001
+  amp: true
+  seed: 42
+  print_freq: 1
+  num_workers: 4
+  output_dir: outputs/
+
+test:
+  ann_file: data/instance_annotations/val.json
+  checkpoint: outputs/best_model.pth
+  output_json: outputs/test/predictions.json
+
+infer:
+  checkpoint: outputs/best_model.pth
+  ann_file: data/instance_annotations/holdout.json   # images-only COCO manifest for public submission inference
+  output_json: outputs/infer/predictions.json
+  num_workers: 4
+  visualize: false
+  vis_score_thr: null
+  vis_max: 0
+
+# Note: src.eval no longer reads this config. Server-side evaluation now takes
+# `--gt` and `--predictions` directly.
+eval:
+  ann_file: data/instance_annotations_old_20260323/holdout.json    # server-only: set this to the private labeled holdout GT
+  prediction_json: outputs/eval/predictions.json
+  metrics_json: outputs/eval/predictions_metrics.json
