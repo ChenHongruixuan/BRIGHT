@@ -181,7 +181,7 @@ Evaluated on the `val` and `holdout` split after 100 epochs of training with def
 
 | Split | mAP | AP50 | AP75 | Intact | Damaged | Destroyed |
 |-------|---------|------|------|--------|---------|-----------|
-| Validation  | 0.1839   | 0.3360 | 0.1862 | 0.3068  | 0.1034 | 0.1416   |
+| Validation  | 0.1854   | 0.3540 | 0.1792 | 0.2861  | 0.1337 | 0.1365   |
 | Holdout  | 0.1839   | 0.3360 | 0.1862 | 0.3068  | 0.1034 | 0.1416   |
 
 ## 📁 Outputs
