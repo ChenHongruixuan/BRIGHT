@@ -1,8 +1,12 @@
 <div align="center">
 <h3>BRIGHT Challenge: Advancing All-Weather Building Damage Mapping to Instance-Level</h3>
+
+
+[![ESSD paper](https://img.shields.io/badge/ESSD-paper-cyan)](https://essd.copernicus.org/articles/17/6217/2025/essd-17-6217-2025.html) [![Zenodo Dataset](https://img.shields.io/badge/Zenodo-Dataset-blue)](https://zenodo.org/records/14619797)   [![HuggingFace Dataset](https://img.shields.io/badge/HuggingFace-Dataset-yellow)](https://huggingface.co/datasets/Kullervo/BRIGHT) [![Zenodo Model](https://img.shields.io/badge/Zenodo-Model-green)](https://zenodo.org/records/15349462) ![visitors](https://visitor-badge.laobi.icu/badge?page_id=ChenHongruixuan.BRIGHT&left_color=%2363C7E6&right_color=%23CEE75F)
 </div>
 
-Mask R-CNN baseline for BRIGHT building damage instance segmentation.
+## 🔭 Overview
+Mask R-CNN baseline for multimodal building damage instance segmentation on BRIGHT, which is part of [Monitoring the World Through an Imperfect Lens (MONTI)](https://sites.google.com/view/monti2026/home) in conjunction with CVPR 2026 Conference.
 
 - Input: pre-event RGB + post-event SAR
 - Classes: `intact`, `damaged`, `destroyed`
@@ -15,7 +19,7 @@ This repo follows the public competition setting:
 - `holdout` is used only for inference submission
 - final `holdout` scoring is done on the server with private GT
 
-## Setup
+## ⚙️ Setup
 
 Install:
 
@@ -25,13 +29,29 @@ conda activate bright_cvprw26
 pip install -e .
 ```
 
+Key dependencies installed via `pyproject.toml`:
+
+| Package | Version | Purpose |
+|---|---|---|
+| `torch` | ≥ 2.0 | Deep learning framework |
+| `torchvision` | ≥ 0.15 | Mask R-CNN backbone and transforms |
+| `numpy` | 1.26.4 | Array operations |
+| `albumentations` | 1.4.24 | Data augmentation |
+| `rasterio` | latest | GeoTIFF I/O |
+| `pycocotools` | latest | COCO format utilities |
+| `faster-coco-eval` | latest | Fast COCO mAP computation |
+| `opencv-python-headless` | latest | Image processing |
+| `supervision` | latest | Visualization utilities |
+
+> Requires CUDA-capable GPU. Install PyTorch with CUDA support manually if `pip` installs the CPU-only version.
+
 Expected dataset layout:
 
 ```text
-<BRIGHT_ROOT>/
+<BRIGHT_ROOT>/  
 ├── post-event/
 ├── pre-event/
-└── target_instance_level/
+└── target_instance_level/  
 ```
 
 Repo-side files:
@@ -50,14 +70,16 @@ data/
 
 `holdout.json` is a public images-only COCO manifest. It does not contain public holdout labels.
 
-Before running, check these fields in [config/disaster.yaml](/home/chenhrx/project/cvprw26/config/disaster.yaml):
+Before running, check these fields in [config/disaster.yaml](config/disaster.yaml):
 
-- `data.root`
-- `data.images_dir`
-- `data.pre_event_dir`
-- `train.output_dir`
-- `infer.checkpoint`
-- `infer.output_json`
+| Field | Description | Example |
+|---|---|---|
+| `data.root` | Root directory of the BRIGHT dataset | `/data/BRIGHT` |
+| `data.images_dir` | Post-event SAR directory (relative to root) | `post-event` |
+| `data.pre_event_dir` | Pre-event RGB directory (relative to root) | `pre-event` |
+| `train.output_dir` | Directory for checkpoints and logs | `outputs/` |
+| `infer.checkpoint` | Trained model checkpoint for inference | `outputs/best_model.pth` |
+| `infer.output_json` | Output path for the submission JSON | `outputs/infer/predictions.json` |
 
 If your release package already includes merged `train.json`, `val.json`, and `holdout.json`, you can skip annotation preparation. Otherwise run:
 
@@ -88,7 +110,7 @@ python tools/merge_coco_json.py \
   --holdout-mode annotations
 ```
 
-## Workflow
+## 🚀 Workflow
 
 Train:
 
@@ -134,16 +156,16 @@ python -m src.test --config config/disaster.yaml
 
 By default this evaluates on `val.json`.
 
-## Evaluation
+## 📊 Evaluation
 
 Participant side:
 
-- upload the `holdout` prediction file to the challenge server
+- upload the `holdout` prediction file to the [challenge server](https://www.codabench.org/competitions/15134/)
 - no public `holdout` metric is available locally
 
 Server side:
 
-Use the self-contained script [src/eval.py](/home/chenhrx/project/cvprw26/src/eval.py):
+Use the self-contained script [src/eval.py](src/eval.py):
 
 ```bash
 python src/eval.py \
@@ -153,7 +175,16 @@ python src/eval.py \
 
 It reports: `mAP`, `AP50`, `AP75`, `intact`, `damaged`, `destroyed`.
 
-## Outputs
+## 🏆 Baseline Performance
+
+Evaluated on the `val` and `holdout` split after 100 epochs of training with default `config/disaster.yaml`:
+
+| Split | mAP | AP50 | AP75 | Intact | Damaged | Destroyed |
+|-------|---------|------|------|--------|---------|-----------|
+| Validation  | 0.1839   | 0.3360 | 0.1862 | 0.3068  | 0.1034 | 0.1416   |
+| Holdout  | 0.1839   | 0.3360 | 0.1862 | 0.3068  | 0.1034 | 0.1416   |
+
+## 📁 Outputs
 
 Training:
 
@@ -174,13 +205,13 @@ Local test:
 
 Main files:
 
-- [src/train.py](/home/chenhrx/project/cvprw26/src/train.py): training
-- [src/infer.py](/home/chenhrx/project/cvprw26/src/infer.py): submission inference
-<!-- - [src/test.py](/home/chenhrx/project/cvprw26/src/test.py): local labeled evaluation -->
-- [src/eval.py](/home/chenhrx/project/cvprw26/src/eval.py): server-side holdout evaluation
-- [tools/merge_coco_json.py](/home/chenhrx/project/cvprw26/tools/merge_coco_json.py): split annotation preparation
+- [src/train.py](src/train.py): training
+- [src/infer.py](src/infer.py): submission inference
+<!-- - [src/test.py](src/test.py): local labeled evaluation -->
+- [src/eval.py](src/eval.py): server-side holdout evaluation
+- [tools/merge_coco_json.py](tools/merge_coco_json.py): split annotation preparation
 
-## 📜Reference
+## 📜 Reference
 If this dataset or code contributes to your research, please kindly consider citing our paper and give this repo ⭐️ :)
 
 ```bibtex
