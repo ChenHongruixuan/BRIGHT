@@ -16,8 +16,28 @@ from src.infer_utils import (
 from src.utils import load_config, set_seed
 
 
+def _normalize_output_stem(output_path: str) -> str:
+    """Return the output stem without JSON or compression suffixes."""
+    if output_path.endswith(".json.zip"):
+        return output_path[:-9]
+    if output_path.endswith(".zip"):
+        return output_path[:-4]
+    if output_path.endswith(".json.gz"):
+        return output_path[:-8]
+    if output_path.endswith(".gz"):
+        return output_path[:-3]
+    if output_path.endswith(".json"):
+        return output_path[:-5]
+    return output_path
+
+
+def _resolve_output_path(output_path: str, use_zip: bool) -> str:
+    output_stem = _normalize_output_stem(output_path)
+    return output_stem + ".zip" if use_zip else output_stem + ".json"
+
+
 def main():
-    parser = argparse.ArgumentParser(description="Run Mask R-CNN inference and export submission JSON")
+    parser = argparse.ArgumentParser(description="Run Mask R-CNN inference and export a submission JSON/ZIP")
     parser.add_argument("--config", default="config/disaster.yaml", help="Path to YAML config file")
     parser.add_argument("--checkpoint", default=None, help="Override checkpoint path from config")
     parser.add_argument(
@@ -25,18 +45,21 @@ def main():
         default=None,
         help="COCO image manifest or annotation JSON used for inference",
     )
-    parser.add_argument("--output", default=None, help="Override output JSON path from config")
+    parser.add_argument("--output", default=None, help="Override output JSON/ZIP path from config")
     parser.add_argument("--num-workers", type=int, default=None, help="Override dataloader workers")
     parser.add_argument(
+        "--zip",
         "--gzip",
+        dest="zip_output",
         action="store_true",
-        help="Write a gzip-compressed submission file (`.json.gz`) to reduce upload size",
+        help="Write a zip-compressed submission file (`.zip`); `--gzip` is kept as a legacy alias",
     )
     parser.add_argument(
+        "--no-zip",
         "--no-gzip",
-        dest="gzip",
+        dest="zip_output",
         action="store_false",
-        help="Disable gzip compression and write a plain `.json` file",
+        help="Disable archive compression and write a plain `.json` file",
     )
     parser.add_argument("--visualize", dest="visualize", action="store_true",
                         help="Save instance-segmentation visualization images")
@@ -46,7 +69,7 @@ def main():
                         help="Score threshold for visualization only")
     parser.add_argument("--vis-max", type=int, default=None,
                         help="Max images to visualize (0 = all)")
-    parser.set_defaults(visualize=None, gzip=True)
+    parser.set_defaults(visualize=None, zip_output=True)
     args = parser.parse_args()
 
     cfg = load_config(args.config)
@@ -69,8 +92,7 @@ def main():
         raise ValueError("No inference annotation file provided. Set infer.ann_file or pass --ann-file.")
     if output_path is None:
         raise ValueError("No output path provided. Set infer.output_json or pass --output.")
-    if args.gzip and not output_path.endswith(".gz"):
-        output_path = output_path + ".gz"
+    output_path = _resolve_output_path(output_path, use_zip=args.zip_output)
 
     num_workers = (
         args.num_workers

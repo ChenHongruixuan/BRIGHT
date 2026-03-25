@@ -2,10 +2,13 @@
 
 from __future__ import annotations
 
+from contextlib import contextmanager
 import gzip
+import io
 import json
 import os
 import time
+import zipfile
 
 import numpy as np
 import torch
@@ -88,16 +91,59 @@ def save_coco_results(coco_results: list[dict], output_path: str) -> None:
 
 
 def load_json_file(path: str):
-    """Load either a plain JSON file or a gzip-compressed JSON file."""
+    """Load a plain JSON file or a compressed JSON archive."""
     with _open_json_file(path, "rt") as f:
         return json.load(f)
 
 
+def _zip_member_name(path: str) -> str:
+    """Infer the JSON member name used inside a submission `.zip` archive."""
+    archive_name = os.path.basename(path)
+    if archive_name.endswith(".json.zip"):
+        return archive_name[:-4]
+    if archive_name.endswith(".zip"):
+        return archive_name[:-4] + ".json"
+    return archive_name + ".json"
+
+
+def _resolve_zip_member_name(archive: zipfile.ZipFile, path: str) -> str:
+    """Pick the JSON payload stored inside a submission archive."""
+    expected_name = _zip_member_name(path)
+    members = [info.filename for info in archive.infolist() if not info.is_dir()]
+    if expected_name in members:
+        return expected_name
+
+    json_members = [name for name in members if name.lower().endswith(".json")]
+    if json_members:
+        return json_members[0]
+    if len(members) == 1:
+        return members[0]
+    raise FileNotFoundError(f"No JSON payload found in ZIP archive: {path}")
+
+
+@contextmanager
 def _open_json_file(path: str, mode: str):
-    """Open plain `.json` or gzip-compressed `.json.gz` files."""
+    """Open plain `.json`, gzip `.json.gz`, or JSON-in-ZIP `.zip` files."""
     if path.endswith(".gz"):
-        return gzip.open(path, mode, encoding="utf-8")
-    return open(path, mode, encoding="utf-8")
+        with gzip.open(path, mode, encoding="utf-8") as f:
+            yield f
+        return
+
+    if path.endswith(".zip"):
+        if "b" in mode:
+            raise ValueError("Binary ZIP access is not supported for JSON helpers.")
+
+        zip_mode = "r" if "r" in mode else "w"
+        member_mode = "r" if "r" in mode else "w"
+        with zipfile.ZipFile(path, zip_mode, compression=zipfile.ZIP_DEFLATED) as archive:
+            member_name = _resolve_zip_member_name(archive, path) if "r" in mode else _zip_member_name(path)
+            with archive.open(member_name, member_mode) as raw_file:
+                with io.TextIOWrapper(raw_file, encoding="utf-8") as text_file:
+                    yield text_file
+        return
+
+    with open(path, mode, encoding="utf-8") as f:
+        yield f
 
 
 def run_inference(

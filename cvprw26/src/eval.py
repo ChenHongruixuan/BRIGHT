@@ -1,10 +1,13 @@
 """Self-contained server-side evaluation script for holdout predictions."""
 
 import argparse
+from contextlib import contextmanager
 import gzip
+import io
 import json
 import os
 import tempfile
+import zipfile
 
 try:
     import faster_coco_eval
@@ -24,11 +27,50 @@ CATEGORIES = {
 }
 
 
+def _zip_member_name(path: str) -> str:
+    archive_name = os.path.basename(path)
+    if archive_name.endswith(".json.zip"):
+        return archive_name[:-4]
+    if archive_name.endswith(".zip"):
+        return archive_name[:-4] + ".json"
+    return archive_name + ".json"
+
+
+def _resolve_zip_member_name(archive: zipfile.ZipFile, path: str) -> str:
+    expected_name = _zip_member_name(path)
+    members = [info.filename for info in archive.infolist() if not info.is_dir()]
+    if expected_name in members:
+        return expected_name
+
+    json_members = [name for name in members if name.lower().endswith(".json")]
+    if json_members:
+        return json_members[0]
+    if len(members) == 1:
+        return members[0]
+    raise FileNotFoundError(f"No JSON payload found in ZIP archive: {path}")
+
+
+@contextmanager
 def _open_json_file(path: str, mode: str):
-    """Open plain JSON or gzip-compressed JSON with UTF-8 encoding."""
+    """Open plain JSON, gzip JSON, or zip-packaged JSON with UTF-8 encoding."""
     if path.endswith(".gz"):
-        return gzip.open(path, mode, encoding="utf-8")
-    return open(path, mode, encoding="utf-8")
+        with gzip.open(path, mode, encoding="utf-8") as f:
+            yield f
+        return
+    if path.endswith(".zip"):
+        if "b" in mode:
+            raise ValueError("Binary ZIP access is not supported for JSON helpers.")
+
+        zip_mode = "r" if "r" in mode else "w"
+        member_mode = "r" if "r" in mode else "w"
+        with zipfile.ZipFile(path, zip_mode, compression=zipfile.ZIP_DEFLATED) as archive:
+            member_name = _resolve_zip_member_name(archive, path) if "r" in mode else _zip_member_name(path)
+            with archive.open(member_name, member_mode) as raw_file:
+                with io.TextIOWrapper(raw_file, encoding="utf-8") as text_file:
+                    yield text_file
+        return
+    with open(path, mode, encoding="utf-8") as f:
+        yield f
 
 
 def _load_json_file(path: str):
@@ -37,16 +79,22 @@ def _load_json_file(path: str):
 
 
 def _default_metrics_path(prediction_json: str) -> str:
+    if prediction_json.endswith(".json.zip"):
+        return prediction_json[:-9] + "_metrics.json"
     if prediction_json.endswith(".json.gz"):
         return prediction_json[:-8] + "_metrics.json"
+    if prediction_json.endswith(".zip"):
+        return prediction_json[:-4] + "_metrics.json"
+    if prediction_json.endswith(".gz"):
+        return prediction_json[:-3] + "_metrics.json"
     if prediction_json.endswith(".json"):
         return prediction_json[:-5] + "_metrics.json"
     return prediction_json + ".metrics.json"
 
 
 def _load_coco_gt(gt_path: str) -> tuple[COCO, str | None]:
-    """Load GT into a COCO object, expanding gzip input into a temp file if needed."""
-    if not gt_path.endswith(".gz"):
+    """Load GT into a COCO object, expanding compressed input into a temp file if needed."""
+    if not gt_path.endswith((".gz", ".zip")):
         return COCO(gt_path), None
 
     gt_dict = _load_json_file(gt_path)
@@ -109,7 +157,7 @@ def _evaluate_segmentation(coco_gt: COCO, prediction_list: list[dict]) -> dict[s
 def main():
     parser = argparse.ArgumentParser(description="Evaluate prediction JSON against server-side ground truth")
     parser.add_argument("--gt", required=True, help="Server-side ground-truth COCO annotation JSON")
-    parser.add_argument("--predictions", required=True, help="Prediction JSON to evaluate")
+    parser.add_argument("--predictions", required=True, help="Prediction JSON/ZIP to evaluate")
     parser.add_argument("--metrics-output", default=None, help="Optional path to save the compact metrics JSON")
     args = parser.parse_args()
 
