@@ -20,6 +20,7 @@
 
 ## 🛎️Updates
 * **` Notice☀️☀️`**: BRIGHT has been accepted by [ESSD](https://essd.copernicus.org/articles/17/6217/2025/essd-17-6217-2025.html)!! The contents related to IEEE GRSS DFC 2025 have been transferred to [here](bda_benchmark/README_DFC25.md)!!
+* **` Mar 25th, 2026`**: [Bright challenge: advancing multimodal building damage mapping to instance level](https://chrx97.com/challenge.html) on CVPRW 2026 is now open. You can download the [instance labels](https://zenodo.org/records/14619797), run our [baseline code](https://github.com/ChenHongruixuan/BRIGHT/tree/master/cvprw26) and submit your results on [Codabench page](https://www.codabench.org/competitions/15134/) now!!
 * **` Nov 18th, 2025`**: BRIGHT has been accepted by [ESSD and online available](https://essd.copernicus.org/articles/17/6217/2025/essd-17-6217-2025.html) now!!
 * **` Aug 12th, 2025`**: BRIGHT has been integrated into [TorChange](https://github.com/Z-Zheng/pytorch-change-models). Many thanks for the effort of [Dr. Zhuo Zheng](https://zhuozheng.top/)!!
 * **` May 05th, 2025`**: All the data and benchmark code related to our paper has now released. You are warmly welcome to use them!!
