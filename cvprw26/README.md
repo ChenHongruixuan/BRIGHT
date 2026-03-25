@@ -5,6 +5,12 @@
 [![ESSD paper](https://img.shields.io/badge/ESSD-paper-cyan)](https://essd.copernicus.org/articles/17/6217/2025/essd-17-6217-2025.html) [![Zenodo Dataset](https://img.shields.io/badge/Zenodo-Dataset-blue)](https://zenodo.org/records/14619797)   [![HuggingFace Dataset](https://img.shields.io/badge/HuggingFace-Dataset-yellow)](https://huggingface.co/datasets/Kullervo/BRIGHT) [![Zenodo Model](https://img.shields.io/badge/Zenodo-Model-green)](https://zenodo.org/records/15349462) ![visitors](https://visitor-badge.laobi.icu/badge?page_id=ChenHongruixuan.BRIGHT&left_color=%2363C7E6&right_color=%23CEE75F)
 </div>
 
+
+<p align="center">
+  <img src="../figure/cvprw_challenge.png" alt="cvprw" width="97%">
+</p>
+
+
 ## 🔭 Overview
 Mask R-CNN baseline for multimodal building damage instance segmentation on BRIGHT, which is part of [Monitoring the World Through an Imperfect Lens (MONTI)](https://sites.google.com/view/monti2026/home) in conjunction with CVPR 2026 Conference.
 
