@@ -20,6 +20,7 @@
 
 ## 🛎️Updates
 * **` Notice☀️☀️`**: BRIGHT has been accepted by [ESSD](https://essd.copernicus.org/articles/17/6217/2025/essd-17-6217-2025.html)!! The contents related to IEEE GRSS DFC 2025 have been transferred to [here](bda_benchmark/README_DFC25.md)!!
+* **` Jul 21st, 2026`**: 🎉The [BRIGHT Challenge](https://www.codabench.org/competitions/15134/) at CVPRW 2026 has officially concluded. Congratulations to the winning teams!! Their solutions are now released on the [challenge page](cvprw26/README.md#-winning-solutions). The [Codabench server](https://www.codabench.org/competitions/15134/) remains open in post-challenge mode for research submissions!!
 * **` May 18th, 2026`**: Bright has been selected as 🔥ESI Hot Paper and Highly Cited Paper🏆!!
 * **` Mar 25th, 2026`**: [Bright challenge: advancing multimodal building damage mapping to instance level](https://chrx97.com/challenge.html) on CVPRW 2026 is now open. You can download the [instance labels](https://zenodo.org/records/14619797), run our [baseline code](https://github.com/ChenHongruixuan/BRIGHT/tree/master/cvprw26) and submit your results on [Codabench page](https://www.codabench.org/competitions/15134/) now!!
 * **` Nov 18th, 2025`**: BRIGHT has been accepted by [ESSD and online available](https://essd.copernicus.org/articles/17/6217/2025/essd-17-6217-2025.html) now!!
@@ -144,6 +145,8 @@ In addition to the above supervised deep models, BRIGHT also provides standardiz
 * [`Unsupervised multimodal image matching`](umim_benchmark/README.md): Evaluate the performance of matching algorithms in aligning **raw, large-scale** optical and SAR images based on **manual-control-point**-based registration accuracy. This setup focuses on realistic multimodal alignment in disaster-affected areas.
 
 * [`IEEE GRSS DFC 2025 Track II`](bda_benchmark/README_DFC25.md): The Track II of [IEEE GRSS DFC 2025](https://www.grss-ieee.org/technical-committees/image-analysis-and-data-fusion/) aims to develop robust and generalizable methods for assessing building damage using bi-temporal multimodal images on unseen disaster events.
+
+* [`BRIGHT Challenge (CVPRW 2026)`](cvprw26/README.md): The [BRIGHT Challenge](https://www.codabench.org/competitions/15134/) at CVPRW 2026 extends BRIGHT to **instance-level** building damage mapping evaluated on **unseen disaster events**, with the setup, baseline, and **winning solutions** available on the challenge page.
 
 
 

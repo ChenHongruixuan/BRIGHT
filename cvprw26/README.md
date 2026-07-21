@@ -11,6 +11,9 @@
 </p>
 
 
+> [!NOTE]
+> **The BRIGHT Challenge has concluded.** Final results were announced on May 27, 2026, and the winners presented at the [MONTI workshop](https://sites.google.com/view/monti2026/home) at CVPR 2026. The [Codabench page](https://www.codabench.org/competitions/15134/) remains open in post-challenge mode for research submissions. The winning solutions are released [below](#-winning-solutions).
+
 ## 🔭 Overview
 Mask R-CNN baseline for multimodal building damage instance segmentation on BRIGHT, which is part of [Monitoring the World Through an Imperfect Lens (MONTI)](https://sites.google.com/view/monti2026/home) in conjunction with CVPR 2026 Conference.
 
@@ -24,6 +27,17 @@ This repo follows the public competition setting:
 - participants receive labels only for `train` and `val`
 - `holdout` is used only for inference submission
 - final `holdout` scoring is done on the server with private GT
+
+## 🥇 Winning Solutions
+
+The final test phase was evaluated exclusively on two disaster events unseen during training: a 2025 wildfire in California and a 2025 hurricane in Jamaica. In total, 157 participants made 1,289 submissions, and 46 teams competed in the final phase. Congratulations to the two winning teams!!
+
+| Rank | Team | Members | Solution | Code |
+|------|------|---------|----------|------|
+| 🥇 1st | **gpt_lh** | He Huang, Jiepan Li, Wei He, Liangpei Zhang | Scene-Segregated Pseudo-Label Learning | [[code]](https://github.com/huang-he99/BightSolution) |
+| 🥈 2nd | **oooo** | Haifeng Wang, Zijie Wang, Chen Zhong, Jiazhen Zhao, Lei Hu, Ting Hu, Hongyan Zhang | Damage-Aware SAR-Optical Query Learning | [[code]](https://github.com/whf-68/Damage-Aware-SAR-Optical-Query-Learning-framework) |
+
+A detailed report of the challenge design, the winning methods, and the lessons learned is provided in our outcome paper (link coming soon). The final leaderboard is available on the [Codabench page](https://www.codabench.org/competitions/15134/).
 
 ## ⚙️ Setup
 
